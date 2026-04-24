@@ -1,0 +1,4 @@
+instance,T,setup_cost,holding_cost,capacity,objective_value,solve_time,status
+inst_1,12,200,1.5,100,5230,0.12,optimal
+inst_2,12,250,1.5,100,5480,0.15,optimal
+inst_3,24,300,2.0,150,11240,0.42,optimal
