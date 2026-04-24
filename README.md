@@ -13,9 +13,9 @@ The purpose of this repository is to ensure complete computational reproducibili
 
 ## 1. Repository Structure
 
-src/        Source code for the mathematical model and experimental framework
-instances/  Benchmark instances used for evaluation
-results/    Computational results reported in the manuscript
+    src/        Source code for the mathematical model and experimental framework
+    instances/  Benchmark instances used for evaluation
+    results/    Computational results reported in the manuscript
 
 ---
 
