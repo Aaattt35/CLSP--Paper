@@ -1,0 +1,5 @@
+T = 5
+Demand = 20 35 40 25 30
+SetupCost = 200
+HoldingCost = 1.5
+Capacity = 100
