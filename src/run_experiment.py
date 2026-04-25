@@ -1,9 +1,11 @@
 """
 Run optimization experiment for a given instance.
+Connects to the CLSP optimization model.
 """
 
 import sys
-
+import os
+from model import solve_model  # new: import the solver function
 
 def read_instance(path):
     data = {}
@@ -15,26 +17,20 @@ def read_instance(path):
     return data
 
 
-def solve_instance(instance):
-    # placeholder for the optimization model
-    result = {
-        "objective_value": 1234,
-        "status": "optimal"
-    }
-    return result
-
-
 if __name__ == "__main__":
-
     if len(sys.argv) < 2:
         print("Usage: python run_experiment.py instance_file")
         sys.exit(1)
 
     instance_file = sys.argv[1]
+    instance_path = os.path.abspath(instance_file)
 
-    instance = read_instance(instance_file)
+    # ---- Run the optimization model ----
+    status, objective, x_values = solve_model(instance_path)
 
-    result = solve_instance(instance)
-
-    print("Status:", result["status"])
-    print("Objective value:", result["objective_value"])
+    # ---- Print results ----
+    print("\n=== Optimization Results ===")
+    print("Status:", status)
+    for i, val in enumerate(x_values, start=1):
+        print(f"x{i} = {val:.4f}")
+    print("Objective value (Z):", objective)
