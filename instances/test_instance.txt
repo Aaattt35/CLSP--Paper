@@ -1,7 +1,7 @@
-T = 4
-demand = 20, 35, 40, 30
-setup_cost = 50, 50, 50, 50
-holding_cost = 1, 1, 1, 1
-production_cost = 2, 2, 2, 2
-capacity = 60, 60, 60, 60
-initial_inventory = 10
+T = 5
+demand = 2, 3, 7, 12, 4
+setup_cost = 123, 452, 213, 78, 57
+holding_cost = 1, 1, 1, 1, 1
+production_cost = 2, 2, 2, 2, 2
+capacity = 20, 20, 20, 20, 20
+initial_inventory = 0
