@@ -55,8 +55,7 @@ text
 ---
 
 ## Quick‑Start for Reviewers (30‑Second Test)
-
-1. Run locally:
+## 1. Run locally:
     pip install -r requirements.txt
    
     python src/run_experiment.py instances/test_instance.txt
