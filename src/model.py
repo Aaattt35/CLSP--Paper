@@ -10,7 +10,7 @@ import pulp
 import os
 
 # ---- Step 1: Read input data ----
-input_path = os.path.join("..", "instances", "test_instance.txt")
+input_path = r"C:\path\to\your\CLSP--Paper\instances\test_instance.txt"
 data = {}
 
 with open(input_path, "r") as f:
