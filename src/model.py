@@ -4,7 +4,6 @@ def solve_model(instance_path):
     # read instance file
     data = {}
     with open(instance_path, "r") as f:
-        print(f"Reading line: {key} = {value}")
         for line in f:
             line = line.strip()
             if not line or line.startswith("#"): 
@@ -14,6 +13,7 @@ def solve_model(instance_path):
                 data[key] = [float(v.strip()) for v in value.split(",")]
             else:
                 data[key] = float(value)
+            print(f"Reading line: {key} = {value}")
 
     T = int(data["T"])
     a_t = data["a_t"]
