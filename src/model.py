@@ -1,155 +1,171 @@
-import ast
-import json
 import os
+import json
+import ast
+from typing import Any, Dict, List, Union
 
 
-def _parse_instance_file(content: str):
+def _parse_instance_file(content: str) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
     """
     Robust parser for instance files that may contain:
       - JSON
       - Python literals (list/dict)
       - numpy-style dumps: array([...], dtype=object)
-    Returns the parsed Python object (list/dict).
+        حتی اگر ناقص باشند و مثلا ] یا ) انتهایی را نداشته باشند.
+
+    خروجی:
+      - یک dict (برای یک نمونه)
+      - یا لیستی از dictها (برای چند نمونه)
     """
     content = content.strip()
 
-    # 1) Try JSON
+    # 1) ابتدا تلاش به عنوان JSON
     try:
-        return json.loads(content)
+        data = json.loads(content)
+        return data
     except Exception:
         pass
 
-    # 2) Try direct Python literal
+    # 2) تلاش به عنوان literal پایتون (لیست / دیکشنری)
     try:
-        return ast.literal_eval(content)
+        data = ast.literal_eval(content)
+        return data
     except Exception:
         pass
 
-    # 3) Try numpy array-like: array([...], dtype=object)
-    cleaned = content
+    # 3) فرمت numpy یا ناقص:
+    #    فقط دیکشنری بین اولین { و آخرین } را جدا می‌کنیم و همان را eval می‌کنیم.
+    first_brace = content.find("{")
+    last_brace = content.rfind("}")
+    if first_brace != -1 and last_brace != -1 and last_brace > first_brace:
+        dict_str = content[first_brace : last_brace + 1]
+        try:
+            instance = ast.literal_eval(dict_str)
+            # برای یکدست بودن، آن را در لیست برمی‌گردانیم
+            return [instance]
+        except Exception as e:
+            raise ValueError(
+                f"Could not parse instance dictionary from content. Last error: {e}"
+            )
 
-    # Remove leading "array(" if exists
-    if cleaned.startswith("array("):
-        cleaned = cleaned[len("array("):]
-
-    # Remove possible trailing ")"
-    cleaned = cleaned.rstrip()
-
-    # Remove trailing ", dtype=object)" if exists
-    if cleaned.endswith(")"):
-        # e.g. " [...], dtype=object)"
-        # first remove last ')'
-        cleaned = cleaned[:-1].rstrip()
-
-    if cleaned.endswith(", dtype=object"):
-        cleaned = cleaned[: -len(", dtype=object")].rstrip()
-
-    # الآن باید چیزی مثل "[{...}]" باشد
-    try:
-        return ast.literal_eval(cleaned)
-    except Exception as e:
-        raise ValueError(
-            f"Could not parse instance file into a usable format. Last error: {e}"
-        )
+    # اگر هیچکدام موفق نشدند، خطا می‌دهیم
+    raise ValueError("Could not parse instance file into a usable format.")
 
 
-def solve_model(file_path):
+def _ensure_output_dir(path: str) -> None:
+    """ایجاد دایرکتوری خروجی اگر وجود نداشت."""
+    directory = os.path.dirname(path)
+    if directory and not os.path.exists(directory):
+        os.makedirs(directory, exist_ok=True)
+
+
+def _extract_parameters(instance: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Load instance file (numpy-array-like or dict/list format),
-    extract relevant CLSP parameters, print them, save them,
-    and return a placeholder optimization result together
-    with extracted parameters (برای این مرحله، مدل حل نمی‌شود).
+    از دیکشنری instance پارامترهای CLSP را استخراج می‌کند.
+
+    انتظار می‌رود instance حداقل شامل موارد زیر باشد
+    (نام دقیق کلیدها را با نمونه‌ی real خودت چک کن و اگر فرق داشت اینجا را تنظیم کن):
+
+      - T: تعداد دوره‌ها (int)
+      - i_n: موجودی اولیه (int یا float)
+      - d: تقاضا (لیست/دیکشنری/آرایه)
+      - p: هزینه تولید
+      - cap: ظرفیت تولید
+      - s: هزینه setup
+      - h: هزینه نگهداری
+
+    اگر کلیدها در داده‌ی واقعی‌ات نام دیگری دارند
+    (مثلاً 'I0' به‌جای 'i_n' یا 'dem' به‌جای 'd') اینجا نگاشت را اصلاح کن.
     """
 
-    # ---------------------------------------------------------
-    # STEP 1 — Read raw content
-    # ---------------------------------------------------------
-    with open(file_path, "r") as f:
+    # اینجا با فرض نام‌های مستقیم:
+    T = instance.get("T")
+    i_n = instance.get("i_n") or instance.get("i0") or instance.get("I0")
+    d = instance.get("d") or instance.get("dem") or instance.get("demand")
+    p = instance.get("p") or instance.get("prod_cost")
+    cap = instance.get("cap") or instance.get("capacity")
+    s = instance.get("s") or instance.get("setup_cost")
+    h = instance.get("h") or instance.get("hold_cost")
+
+    params = {
+        "T": T,
+        "i_n": i_n,
+        "d": d,
+        "p": p,
+        "cap": cap,
+        "s": s,
+        "h": h,
+    }
+
+    return params
+
+
+def solve_model(file_path: str) -> Dict[str, Any]:
+    """
+    تابع اصلی که توسط run_experiment.py فراخوانی می‌شود.
+
+    کارهایی که انجام می‌دهد:
+      1. خواندن فایل instance
+      2. پارس کردن آن با _parse_instance_file
+      3. استخراج پارامترهای CLSP
+      4. چاپ پارامترها روی کنسول
+      5. ذخیره در output/extracted_params.json
+      6. برگرداندن خروجی سازگار با run_experiment.py
+
+    فعلاً حل واقعی مدل انجام نمی‌شود؛ فقط پارامترها استخراج و گزارش می‌شوند.
+    """
+
+    # 1) خواندن محتوا
+    if not os.path.exists(file_path):
+        raise FileNotFoundError(f"Instance file not found: {file_path}")
+
+    with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # ---------------------------------------------------------
-    # STEP 2 — Parse content (robust)
-    # ---------------------------------------------------------
+    # 2) پارس کردن
     data = _parse_instance_file(content)
 
-    # ---------------------------------------------------------
-    # STEP 3 — Normalize to a single instance dictionary
-    # ---------------------------------------------------------
-    if isinstance(data, list) and len(data) > 0 and isinstance(data[0], dict):
-        # numpy array dump → after cleaning تبدیل به list[dict] شده
+    # 3) انتخاب instance
+    # - اگر لیست از دیکشنری‌ها بود، اولین مورد
+    # - اگر خود دیکشنری بود، همان
+    if isinstance(data, list):
+        if not data:
+            raise ValueError("Parsed instance list is empty.")
         instance = data[0]
+        if not isinstance(instance, dict):
+            raise ValueError(
+                f"Expected a dict as first element of list, got: {type(instance)}"
+            )
     elif isinstance(data, dict):
         instance = data
     else:
-        raise ValueError("Parsed data is neither a dict nor a list of dicts.")
+        raise ValueError(
+            f"Parsed data has unexpected type: {type(data)}. Expected dict or list."
+        )
 
-    # ---------------------------------------------------------
-    # STEP 4 — Extract parameters (using your keys)
-    # ---------------------------------------------------------
-    # T
-    T = int(instance.get("T", 0))
+    # 4) استخراج پارامترها
+    params = _extract_parameters(instance)
 
-    # initial inventory
-    initial_inventory = instance.get("i_n", instance.get("initial_inventory", 0))
+    # 5) چاپ روی کنسول (برای دیباگ در GitHub Actions)
+    print("=== Extracted CLSP parameters ===")
+    for k, v in params.items():
+        print(f"{k}: {v}")
+    print("================================")
 
-    # دیکشنری‌های پارامترها
-    demand_dict = instance.get("d", instance.get("demand", {}))
-    production_dict = instance.get("p", instance.get("production_cost", {}))
-    setup_dict = instance.get("s", instance.get("setup_cost", {}))
-    hold_dict = instance.get("h", instance.get("holding_cost", {}))
-    capacity_dict = instance.get("cap", instance.get("capacity", {}))
+    # 6) ذخیره در فایل JSON
+    output_path = os.path.join("output", "extracted_params.json")
+    _ensure_output_dir(output_path)
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(params, f, indent=2, ensure_ascii=False)
 
-    # تبدیل dict به لیست، با مرتب‌سازی کلیدها 1..T
-    def dict_to_ordered_list(d):
-        if isinstance(d, dict):
-            # کلیدها مثل 1, 2, 3 هستند → به ترتیب عددی
-            return [d[k] for k in sorted(d.keys(), key=lambda x: int(x))]
-        # اگر خود لیست بود
-        return list(d)
-
-    demand = dict_to_ordered_list(demand_dict)
-    production_cost = dict_to_ordered_list(production_dict)
-    setup_cost = dict_to_ordered_list(setup_dict)
-    holding_cost = dict_to_ordered_list(hold_dict)
-    capacity = dict_to_ordered_list(capacity_dict)
-
-    # ---------------------------------------------------------
-    # STEP 5 — Prepare extracted parameter structure
-    # ---------------------------------------------------------
-    extracted = {
-        "T": T,
-        "initial_inventory": initial_inventory,
-        "demand": demand,
-        "production_cost": production_cost,
-        "setup_cost": setup_cost,
-        "holding_cost": holding_cost,
-        "capacity": capacity,
+    # 7) خروجی سازگار با run_experiment.py
+    #    این structure را می‌توانی بعداً با حل واقعی مدل تکمیل کنی.
+    result = {
+        "status": "ok",
+        "message": "Parameters extracted successfully. Model not solved yet.",
+        "parameters": params,
+        # placeholder برای نتایج مدل:
+        "objective_value": None,
+        "solution": None,
     }
 
-    # ---------------------------------------------------------
-    # STEP 6 — Print extracted values
-    # ---------------------------------------------------------
-    print("\n===== Extracted Parameters =====")
-    print(json.dumps(extracted, indent=4))
-    print("================================\n")
-
-    # ---------------------------------------------------------
-    # STEP 7 — Save to output file
-    # ---------------------------------------------------------
-    os.makedirs("output", exist_ok=True)
-    out_path = os.path.join("output", "extracted_params.json")
-    with open(out_path, "w") as f:
-        json.dump(extracted, f, indent=4)
-
-    print(f"Saved extracted parameters to: {out_path}")
-
-    # ---------------------------------------------------------
-    # STEP 8 — Return something compatible with run_experiment.py
-    # (موقتا مدل حل نمی‌کنیم؛ status/objective/x_values را dummy برمی‌گردانیم)
-    # اگر می‌خواهی همین‌جا مدل را هم حل کنیم، بگو تا نسخه‌ی کامل ساده را اضافه کنم.
-    # ---------------------------------------------------------
-    status = "EXTRACTION_ONLY"
-    objective = None
-    x_values = {}
-
-    return status, objective, x_values
+    return result
