@@ -1,68 +1,33 @@
-# CLSP--Paper/src/model.py
-# ----------------------------------------------------------
-# Linear Programming Model
-# Maximize: Z = sum(c_t * x_t)
-# Subject to: sum(a_t * x_t) <= cap
-# x_t >= 0
-# ----------------------------------------------------------
+def solve_model(instance_path):
+    import pulp
 
-import pulp
-import os
+    # read instance file
+    data = {}
+    with open(instance_path, "r") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"): 
+                continue
+            key, value = [x.strip() for x in line.split("=", 1)]
+            if "," in value:
+                data[key] = [float(v.strip()) for v in value.split(",")]
+            else:
+                data[key] = float(value)
 
-# ---- Step 1: Read input data ----
-input_path = r"C:\path\to\your\CLSP--Paper\instances\test_instance.txt"
-data = {}
+    T = int(data["T"])
+    a_t = data["a_t"]
+    c_t = data["c_t"]
+    cap = data["cap"]
 
-with open(input_path, "r") as f:
-    for line in f:
-        line = line.strip()
-        if not line or line.startswith("#"):
-            continue
-        key, value = [x.strip() for x in line.split("=", 1)]
-        if "," in value:
-            data[key] = [float(v.strip()) for v in value.split(",")]
-        else:
-            data[key] = float(value)
+    model = pulp.LpProblem("CLSP_Model", pulp.LpMaximize)
+    x = [pulp.LpVariable(f"x{t+1}", lowBound=0) for t in range(T)]
 
-# Extract parameters
-T = int(data["T"])
-a_t = data["a_t"]
-c_t = data["c_t"]
-cap = data["cap"]
+    model += pulp.lpSum(c_t[t] * x[t] for t in range(T))
+    model += pulp.lpSum(a_t[t] * x[t] for t in range(T)) <= cap
 
-# ---- Step 2: Define LP model ----
-model = pulp.LpProblem("CLSP_Model", pulp.LpMaximize)
+    model.solve(pulp.PULP_CBC_CMD(msg=0))
+    status = pulp.LpStatus[model.status]
+    values = [x[t].value() for t in range(T)]
+    Z = pulp.value(model.objective)
 
-# Decision variables
-x = [pulp.LpVariable(f"x{t+1}", lowBound=0) for t in range(T)]
-
-# Objective function
-model += pulp.lpSum(c_t[t] * x[t] for t in range(T)), "Total_Profit"
-
-# Single capacity constraint
-model += pulp.lpSum(a_t[t] * x[t] for t in range(T)) <= cap, "Capacity"
-
-# ---- Step 3: Solve ----
-model.solve(pulp.PULP_CBC_CMD(msg=0))
-
-# ---- Step 4: Prepare output ----
-status = pulp.LpStatus[model.status]
-values = [x[t].value() for t in range(T)]
-Z = pulp.value(model.objective)
-
-# ---- Step 5: Print to console ----
-print("Status:", status)
-for t in range(T):
-    print(f"x{t+1} = {values[t]:.4f}")
-print("Z =", Z)
-
-# ---- Step 6: Save to file ----
-output_path = os.path.join("..", "instances", "test_output.txt")
-with open(output_path, "w") as out:
-    out.write(f"Status: {status}\n")
-    for t in range(T):
-        out.write(f"x{t+1} = {values[t]:.4f}\n")
-    out.write(f"Z = {Z:.4f}\n")
-
-print(f"\n✅ نتایج علاوه بر چاپ در کنسول، در این فایل نیز ذخیره شد:")
-print(output_path)
+    return status, Z, values
