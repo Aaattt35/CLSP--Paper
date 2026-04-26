@@ -6,60 +6,58 @@ import ast
 
 def _parse_instance_file(content: str) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
     """
-    Robust parser for instance files that may contain:
-      - JSON
-      - Python literals (list/dict)
-      - numpy-style dumps: array([...], dtype=object)
-        حتی اگر ناقص باشند و مثلا ] یا ) انتهایی را نداشته باشند.
-
-    خروجی:
-      - یک dict (برای یک نمونه)
-      - یا لیستی از dictها (برای چند نمونه)
+    Robust parser for instance files that may contain JSON, Python literals,
+    or numpy-style dumps. Returns either a dict or a list of dicts.
     """
     content = content.strip()
 
-    # 1) ابتدا تلاش به عنوان JSON
+    # 1) Try JSON
     try:
-        data = json.loads(content)
-        return data
+        return json.loads(content)
     except Exception:
         pass
 
-    # 2) تلاش به عنوان literal پایتون (لیست / دیکشنری)
+    # 2) Try Python literal (dict/list)
     try:
-        data = ast.literal_eval(content)
-        return data
+        return ast.literal_eval(content)
     except Exception:
         pass
 
-    # 3) فرمت numpy یا ناقص:
-    #    فقط دیکشنری بین اولین { و آخرین } را جدا می‌کنیم و همان را eval می‌کنیم.
+    # 3) Try numpy-like / partial structure
     first_brace = content.find("{")
     last_brace = content.rfind("}")
     if first_brace != -1 and last_brace != -1 and last_brace > first_brace:
-        dict_str = content[first_brace : last_brace + 1]
         try:
-            instance = ast.literal_eval(dict_str)
-            # برای یکدست بودن، آن را در لیست برمی‌گردانیم
-            return [instance]
+            inner = content[first_brace:last_brace + 1]
+            parsed = ast.literal_eval(inner)
+            return [parsed]
         except Exception as e:
-            raise ValueError(
-                f"Could not parse instance dictionary from content. Last error: {e}"
-            )
+            raise ValueError(f"Failed to parse dict from numpy-like dump: {e}")
 
-    # اگر هیچکدام موفق نشدند، خطا می‌دهیم
-    raise ValueError("Could not parse instance file into a usable format.")
+    raise ValueError("Could not parse instance file in any known format.")
 
 
 def _ensure_output_dir(path: str) -> None:
-    """ایجاد دایرکتوری خروجی اگر وجود نداشت."""
+    """Create output directory if missing."""
     directory = os.path.dirname(path)
     if directory and not os.path.exists(directory):
         os.makedirs(directory, exist_ok=True)
 
+
+def _normalize_index_key(x: Union[int, str]) -> str:
+    """Converts any index into a clean string key for JSON-safe dicts."""
+    return str(x)
+
+
+def _key2(t: Any, j: Any) -> str:
+    """Creates a JSON-safe 2D key like 't-j'."""
+    return f"{t}-{j}"
+
+
 def _extract_parameters(instance: Dict[str, Any]) -> Dict[str, Any]:
     """
-    Extract model parameters from a parsed instance dictionary.
+    Extracts all model parameters from instance and produces a JSON-safe output.
+    All keys become strings, including 2D indices.
     """
 
     T = instance.get("T")
@@ -70,40 +68,64 @@ def _extract_parameters(instance: Dict[str, Any]) -> Dict[str, Any]:
     h = instance.get("h") or instance.get("hold_cost")
 
     if T is None:
-        raise ValueError("Missing planning horizon T in instance.")
+        raise ValueError("Missing planning horizon T.")
 
-    # Ensure T_set is properly defined
+    # Build time index set
     if isinstance(T, int):
-        # assume periods are 0 ... T-1
-        T_set = {t for t in range(1, T+1)}
+        T_set = list(range(1, T + 1))
     elif isinstance(T, list):
         T_set = T
     else:
-        raise ValueError("T must be either int or list.")
+        raise ValueError("T must be int or list.")
 
-    # ---- Compute h_{t,j} = sum_{k=t}^{j-1} h_k for t < j ----
-    h_tj = {}
+    # Normalize 1D parameter keys to strings
+    def normalize_1d(dct):
+        if not isinstance(dct, dict):
+            # if list: convert to { "1": value1, ... }
+            if isinstance(dct, list):
+                return {str(i + 1): dct[i] for i in range(len(dct))}
+            raise ValueError("Parameter must be dict or list.")
+        return {str(k): v for k, v in dct.items()}
+
+    d = normalize_1d(d)
+    p = normalize_1d(p)
+    cap = normalize_1d(cap)
+    s = normalize_1d(s)
+    h = normalize_1d(h)
+
+    # ---- Compute h_{t,j} ----
+    h_tj: Dict[str, float] = {}
     for t in T_set:
         for j in T_set:
             if t < j:
-                h_tj[(t, j)] = sum(h[k] for k in range(t, j))
+                key = _key2(t, j)
+                total = 0
+                for k in range(t, j):
+                    total += h[str(k)]
+                h_tj[key] = total
 
     # ---- Compute a(t,j) and a_ratio(t,j) ----
-    a = {}
-    a_ratio = {}
+    a: Dict[str, float] = {}
+    a_ratio: Dict[str, Optional[float]] = {}
 
     for t in T_set:
         for j in T_set:
             if t < j:
-                a[(t, j)] = s[j] - (h_tj[(t, j)] - p[j] + p[t]) * d[j]
+                key = _key2(t, j)
 
-                denominator = (h_tj[(t, j)] + p[t]) * d[j]
-                if denominator != 0:
-                    a_ratio[(t, j)] = (s[j] + p[j] * d[j]) / denominator
+                hsum = h_tj[key]
+                dj = d[str(j)]
+                term = s[str(j)] - (hsum - p[str(j)] + p[str(t)]) * dj
+                a[key] = term
+
+                denom = (hsum + p[str(t)]) * dj
+                if denom != 0:
+                    a_ratio[key] = (s[str(j)] + p[str(j)] * dj) / denom
                 else:
-                    a_ratio[(t, j)] = None  # avoid division by zero
+                    a_ratio[key] = None
 
-    params = {
+    # Return publication-ready structure
+    return {
         "T": T,
         "d": d,
         "p": p,
@@ -112,74 +134,46 @@ def _extract_parameters(instance: Dict[str, Any]) -> Dict[str, Any]:
         "h": h,
         "a": a,
         "a_ratio": a_ratio,
+        "h_tj": h_tj,
     }
-
-    return params
 
 
 def solve_model(file_path: str):
     """
-    تابع اصلی که توسط run_experiment.py فراخوانی می‌شود.
-
-    مطابق با run_experiment.py باید سه خروجی بدهد:
-        status, objective, x_values
-
-    در این نسخه:
-      1. فایل instance را می‌خواند.
-      2. آن را با _parse_instance_file پارس می‌کند.
-      3. پارامترهای CLSP را استخراج می‌کند.
-      4. پارامترها را روی کنسول چاپ می‌کند.
-      5. پارامترها را در output/extracted_params.json ذخیره می‌کند.
-      6. مقادیر placeholder به صورت
-         status="ok", objective=None, x_values={}
-         برمی‌گرداند تا run_experiment.py بدون خطا اجرا شود.
+    Reads instance, extracts parameters, dumps a JSON-safe parameter file,
+    and returns placeholder (status, objective, x_values).
     """
 
-    # 1) خواندن محتوا
     if not os.path.exists(file_path):
-        raise FileNotFoundError(f"Instance file not found: {file_path}")
+        raise FileNotFoundError(f"Instance not found: {file_path}")
 
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # 2) پارس کردن
-    data = _parse_instance_file(content)
+    parsed = _parse_instance_file(content)
 
-    # 3) انتخاب instance
-    if isinstance(data, list):
-        if not data:
-            raise ValueError("Parsed instance list is empty.")
-        instance = data[0]
-        if not isinstance(instance, dict):
-            raise ValueError(
-                f"Expected a dict as first element of list, got: {type(instance)}"
-            )
-    elif isinstance(data, dict):
-        instance = data
+    if isinstance(parsed, list):
+        if not parsed:
+            raise ValueError("Empty instance list.")
+        instance = parsed[0]
     else:
-        raise ValueError(
-            f"Parsed data has unexpected type: {type(data)}. Expected dict or list."
-        )
+        instance = parsed
 
-    # 4) استخراج پارامترها
+    if not isinstance(instance, dict):
+        raise ValueError(f"Unexpected instance type after parsing: {type(instance)}")
+
     params = _extract_parameters(instance)
 
-    # 5) چاپ روی کنسول (برای دیباگ در GitHub Actions)
-    print("=== Extracted CLSP parameters ===")
+    print("=== Extracted Parameters (JSON-safe) ===")
     for k, v in params.items():
         print(f"{k}: {v}")
-    print("================================")
+    print("========================================")
 
-    # 6) ذخیره در فایل JSON
     output_path = os.path.join("output", "extracted_params.json")
     _ensure_output_dir(output_path)
+
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(params, f, indent=2, ensure_ascii=False)
 
-    # 7) خروجی مورد انتظار run_experiment.py
-    status = "okir"     # در آینده می‌توانی "feasible"/"infeasible" واقعی را اینجا قرار دهی
-    objective = None  # فعلاً مدل حل نمی‌شود
-    x_values = {}     # فعلاً هیچ متغیر تصمیمی محاسبه نشده است
-
-    return status, objective, x_values
-    return result
+    # Placeholder solver output
+    return "ok", None, {}
