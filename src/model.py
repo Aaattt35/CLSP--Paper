@@ -1,3 +1,8 @@
+from typing import Any, Dict, List, Optional
+import os
+import json
+import ast
+
 def _extract_parameters(instance: Dict[str, Any]) -> Dict[str, Any]:
     """
     Extract model parameters from a parsed instance dictionary.
