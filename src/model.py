@@ -1,99 +1,58 @@
-import os
-import json
-import ast
-from typing import Any, Dict, List, Union
-
-
-def _parse_instance_file(content: str) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
-    """
-    Robust parser for instance files that may contain:
-      - JSON
-      - Python literals (list/dict)
-      - numpy-style dumps: array([...], dtype=object)
-        حتی اگر ناقص باشند و مثلا ] یا ) انتهایی را نداشته باشند.
-
-    خروجی:
-      - یک dict (برای یک نمونه)
-      - یا لیستی از dictها (برای چند نمونه)
-    """
-    content = content.strip()
-
-    # 1) ابتدا تلاش به عنوان JSON
-    try:
-        data = json.loads(content)
-        return data
-    except Exception:
-        pass
-
-    # 2) تلاش به عنوان literal پایتون (لیست / دیکشنری)
-    try:
-        data = ast.literal_eval(content)
-        return data
-    except Exception:
-        pass
-
-    # 3) فرمت numpy یا ناقص:
-    #    فقط دیکشنری بین اولین { و آخرین } را جدا می‌کنیم و همان را eval می‌کنیم.
-    first_brace = content.find("{")
-    last_brace = content.rfind("}")
-    if first_brace != -1 and last_brace != -1 and last_brace > first_brace:
-        dict_str = content[first_brace : last_brace + 1]
-        try:
-            instance = ast.literal_eval(dict_str)
-            # برای یکدست بودن، آن را در لیست برمی‌گردانیم
-            return [instance]
-        except Exception as e:
-            raise ValueError(
-                f"Could not parse instance dictionary from content. Last error: {e}"
-            )
-
-    # اگر هیچکدام موفق نشدند، خطا می‌دهیم
-    raise ValueError("Could not parse instance file into a usable format.")
-
-
-def _ensure_output_dir(path: str) -> None:
-    """ایجاد دایرکتوری خروجی اگر وجود نداشت."""
-    directory = os.path.dirname(path)
-    if directory and not os.path.exists(directory):
-        os.makedirs(directory, exist_ok=True)
-
-
 def _extract_parameters(instance: Dict[str, Any]) -> Dict[str, Any]:
     """
-    از دیکشنری instance پارامترهای CLSP را استخراج می‌کند.
-
-    انتظار می‌رود instance حداقل شامل موارد زیر باشد
-    (نام دقیق کلیدها را با نمونه‌ی real خودت چک کن و اگر فرق داشت اینجا را تنظیم کن):
-
-      - T: تعداد دوره‌ها (int)
-      - i_n: موجودی اولیه (int یا float)
-      - d: تقاضا (لیست/دیکشنری/آرایه)
-      - p: هزینه تولید
-      - cap: ظرفیت تولید
-      - s: هزینه setup
-      - h: هزینه نگهداری
-
-    اگر کلیدها در داده‌ی واقعی‌ات نام دیگری دارند
-    (مثلاً 'I0' به‌جای 'i_n' یا 'dem' به‌جای 'd') اینجا نگاشت را اصلاح کن.
+    Extract model parameters from a parsed instance dictionary.
     """
 
-    # اینجا با فرض نام‌های مستقیم:
     T = instance.get("T")
-    i_n = instance.get("i_n") or instance.get("i0") or instance.get("I0")
     d = instance.get("d") or instance.get("dem") or instance.get("demand")
     p = instance.get("p") or instance.get("prod_cost")
     cap = instance.get("cap") or instance.get("capacity")
     s = instance.get("s") or instance.get("setup_cost")
     h = instance.get("h") or instance.get("hold_cost")
 
+    if T is None:
+        raise ValueError("Missing planning horizon T in instance.")
+
+    # Ensure T_set is properly defined
+    if isinstance(T, int):
+        # assume periods are 0 ... T-1
+        T_set = {t for t in range(1, T+1)}
+    elif isinstance(T, list):
+        T_set = T
+    else:
+        raise ValueError("T must be either int or list.")
+
+    # ---- Compute h_{t,j} = sum_{k=t}^{j-1} h_k for t < j ----
+    h_tj = {}
+    for t in T_set:
+        for j in T_set:
+            if t < j:
+                h_tj[(t, j)] = sum(h[k] for k in range(t, j))
+
+    # ---- Compute a(t,j) and a_ratio(t,j) ----
+    a = {}
+    a_ratio = {}
+
+    for t in T_set:
+        for j in T_set:
+            if t < j:
+                a[(t, j)] = s[j] - (h_tj[(t, j)] - p[j] + p[t]) * d[j]
+
+                denominator = (h_tj[(t, j)] + p[t]) * d[j]
+                if denominator != 0:
+                    a_ratio[(t, j)] = (s[j] + p[j] * d[j]) / denominator
+                else:
+                    a_ratio[(t, j)] = None  # avoid division by zero
+
     params = {
         "T": T,
-        "i_n": i_n,
         "d": d,
         "p": p,
         "cap": cap,
         "s": s,
         "h": h,
+        "a": a,
+        "a_ratio": a_ratio,
     }
 
     return params
@@ -159,7 +118,7 @@ def solve_model(file_path: str):
         json.dump(params, f, indent=2, ensure_ascii=False)
 
     # 7) خروجی مورد انتظار run_experiment.py
-    status = "ok"     # در آینده می‌توانی "feasible"/"infeasible" واقعی را اینجا قرار دهی
+    status = "okir"     # در آینده می‌توانی "feasible"/"infeasible" واقعی را اینجا قرار دهی
     objective = None  # فعلاً مدل حل نمی‌شود
     x_values = {}     # فعلاً هیچ متغیر تصمیمی محاسبه نشده است
 
