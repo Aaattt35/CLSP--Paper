@@ -1,7 +1,61 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 import os
 import json
 import ast
+
+
+def _parse_instance_file(content: str) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
+    """
+    Robust parser for instance files that may contain:
+      - JSON
+      - Python literals (list/dict)
+      - numpy-style dumps: array([...], dtype=object)
+        حتی اگر ناقص باشند و مثلا ] یا ) انتهایی را نداشته باشند.
+
+    خروجی:
+      - یک dict (برای یک نمونه)
+      - یا لیستی از dictها (برای چند نمونه)
+    """
+    content = content.strip()
+
+    # 1) ابتدا تلاش به عنوان JSON
+    try:
+        data = json.loads(content)
+        return data
+    except Exception:
+        pass
+
+    # 2) تلاش به عنوان literal پایتون (لیست / دیکشنری)
+    try:
+        data = ast.literal_eval(content)
+        return data
+    except Exception:
+        pass
+
+    # 3) فرمت numpy یا ناقص:
+    #    فقط دیکشنری بین اولین { و آخرین } را جدا می‌کنیم و همان را eval می‌کنیم.
+    first_brace = content.find("{")
+    last_brace = content.rfind("}")
+    if first_brace != -1 and last_brace != -1 and last_brace > first_brace:
+        dict_str = content[first_brace : last_brace + 1]
+        try:
+            instance = ast.literal_eval(dict_str)
+            # برای یکدست بودن، آن را در لیست برمی‌گردانیم
+            return [instance]
+        except Exception as e:
+            raise ValueError(
+                f"Could not parse instance dictionary from content. Last error: {e}"
+            )
+
+    # اگر هیچکدام موفق نشدند، خطا می‌دهیم
+    raise ValueError("Could not parse instance file into a usable format.")
+
+
+def _ensure_output_dir(path: str) -> None:
+    """ایجاد دایرکتوری خروجی اگر وجود نداشت."""
+    directory = os.path.dirname(path)
+    if directory and not os.path.exists(directory):
+        os.makedirs(directory, exist_ok=True)
 
 def _extract_parameters(instance: Dict[str, Any]) -> Dict[str, Any]:
     """
