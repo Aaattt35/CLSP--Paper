@@ -99,19 +99,22 @@ def _extract_parameters(instance: Dict[str, Any]) -> Dict[str, Any]:
     return params
 
 
-def solve_model(file_path: str) -> Dict[str, Any]:
+def solve_model(file_path: str):
     """
     تابع اصلی که توسط run_experiment.py فراخوانی می‌شود.
 
-    کارهایی که انجام می‌دهد:
-      1. خواندن فایل instance
-      2. پارس کردن آن با _parse_instance_file
-      3. استخراج پارامترهای CLSP
-      4. چاپ پارامترها روی کنسول
-      5. ذخیره در output/extracted_params.json
-      6. برگرداندن خروجی سازگار با run_experiment.py
+    مطابق با run_experiment.py باید سه خروجی بدهد:
+        status, objective, x_values
 
-    فعلاً حل واقعی مدل انجام نمی‌شود؛ فقط پارامترها استخراج و گزارش می‌شوند.
+    در این نسخه:
+      1. فایل instance را می‌خواند.
+      2. آن را با _parse_instance_file پارس می‌کند.
+      3. پارامترهای CLSP را استخراج می‌کند.
+      4. پارامترها را روی کنسول چاپ می‌کند.
+      5. پارامترها را در output/extracted_params.json ذخیره می‌کند.
+      6. مقادیر placeholder به صورت
+         status="ok", objective=None, x_values={}
+         برمی‌گرداند تا run_experiment.py بدون خطا اجرا شود.
     """
 
     # 1) خواندن محتوا
@@ -125,8 +128,6 @@ def solve_model(file_path: str) -> Dict[str, Any]:
     data = _parse_instance_file(content)
 
     # 3) انتخاب instance
-    # - اگر لیست از دیکشنری‌ها بود، اولین مورد
-    # - اگر خود دیکشنری بود، همان
     if isinstance(data, list):
         if not data:
             raise ValueError("Parsed instance list is empty.")
@@ -157,15 +158,10 @@ def solve_model(file_path: str) -> Dict[str, Any]:
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(params, f, indent=2, ensure_ascii=False)
 
-    # 7) خروجی سازگار با run_experiment.py
-    #    این structure را می‌توانی بعداً با حل واقعی مدل تکمیل کنی.
-    result = {
-        "status": "ok",
-        "message": "Parameters extracted successfully. Model not solved yet.",
-        "parameters": params,
-        # placeholder برای نتایج مدل:
-        "objective_value": None,
-        "solution": None,
-    }
+    # 7) خروجی مورد انتظار run_experiment.py
+    status = "ok"     # در آینده می‌توانی "feasible"/"infeasible" واقعی را اینجا قرار دهی
+    objective = None  # فعلاً مدل حل نمی‌شود
+    x_values = {}     # فعلاً هیچ متغیر تصمیمی محاسبه نشده است
 
+    return status, objective, x_values
     return result
