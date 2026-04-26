@@ -1,9 +1,9 @@
 # Dataset of Generated Instances
 
-This directory contains all generated instances used in the computational study associated with this work.  
+This directory contains Generated_instances folder including all generated instances used in the computational study associated with this work.  
 The instances are organized according to different levels of the **α ratio** and various **capacity‑to‑demand (c) ratios**.
 
-Each file in this directory corresponds to a single instance and encodes all parameters required by the model described in the paper.
+Each file in this folder corresponds to a specific set of instances, including four instances generated for different values of the planning horizon for each combination of α and c. Each file encodes all parameters required by the model described in the paper.
 
 ---
 
@@ -14,37 +14,19 @@ Each instance file contains the following fields:
 | Field | Description |
 |:------|:------------|
 | **ins** | Index of the instance within its corresponding class. |
-| **f = (f_min, f_max)** | Range of the \( f^r \) ratio, as defined in the paper. |
-| **c** | Capacity‑to‑demand ratio. A detailed definition is provided in the main text of the paper. |
+| **f = (f_min, f_max)** | Range of the \( f^r \) ratio. |
+| **c** | Capacity‑to‑demand ratio.|
 | **T** | Length of the planning horizon (number of periods). |
 | **i_n** | Number of instances generated for the specific combination of \( f \), \( c \), and \( T \). |
-| **stat** | Statistical information related to a coefficient in the TPN model (see the paper for the exact definition and role of this coefficient). |
+| **stat** | Statistical information related to a coefficient in the TPN model. |
 | **d** | Vector of demand values for each period in the planning horizon. |
 | **p** | Vector of unit production costs. |
 | **cap** | Vector of production capacities for each period. |
 | **s** | Setup cost associated with initiating production. |
 | **h** | Vector of inventory holding costs per period. |
-
+##(see the paper for the exact definition and role of this coefficient)##
 ---
-
-## 2. Organization of Instances
-
-Instances are grouped according to:
-
-- **α‑ratio levels**, and  
-- **capacity‑to‑demand (c) ratios**,
-
-in order to support stratified analysis and reproducibility of the computational experiments.
-
-The naming convention and grouping of files are consistent with the experimental design reported in the paper. Users are referred to the paper for:
-
-- formal definitions of all parameters,  
-- details of the instance generation procedure, and  
-- the role of each parameter in the underlying optimization model.
-
----
-
-## 3. Usage and Reproducibility
+## 2. Usage and Reproducibility
 
 These instances are intended to enable:
 
