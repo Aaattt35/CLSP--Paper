@@ -24,7 +24,8 @@ Each instance file contains the following fields:
 | **cap** | Vector of production capacities for each period. |
 | **s** | Setup cost associated with initiating production. |
 | **h** | Vector of inventory holding costs per period. |
-##(see the paper for the exact definition and role of this coefficient)##
+
+*pls see the paper for the exact definition and role of parameters.*
 ---
 ## 2. Usage and Reproducibility
 
