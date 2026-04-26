@@ -1,4 +1,19 @@
+# build_fal_model.py
 def build_Fal(T, s, p, d, cap, h): 
+    """
+    Build the 'Fal' aggregated CLSP model (Wagner-Whitin type formulation).
+
+    Args:
+        T   (int): number of periods (planning horizon length)
+        s   (dict[int, float]): setup cost per period t
+        p   (dict[int, float]): unit production cost per period t
+        d   (dict[int, float]): demand in period t
+        cap (dict[int, float]): production capacity in period t
+        h   (dict[int, float]): inventory holding cost per unit per period t
+
+    Returns:
+        fal (ConcreteModel): Pyomo model instance of the Fal formulation.
+    """
     
     fal = ConcreteModel()  
     
