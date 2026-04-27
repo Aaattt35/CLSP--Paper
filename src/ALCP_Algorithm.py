@@ -94,5 +94,5 @@ def ALCP_sgg_m(T, cap, d, c):      #ALCP suggestion for m
     
     
     
-    return m_hat, r_star, q_r_star
+    return m_hat
 
