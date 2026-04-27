@@ -29,29 +29,29 @@ if __name__ == "__main__":
     Parameters = Read_input(instance_path)
 
     # To get the planning horizon 'T':
-    planning_horizon = Parameters.get("T")
-    if planning_horizon is not None:
-        print("Planning Horizon (T):", planning_horizon)
-    else:
-        print("Planning horizon ('T') not found in parameters.")
-   
-    # To get the demand dictionary 'd':
-    demand_data = Parameters.get("d")
+    T = Parameters.get("T")
+    d = Parameters.get("d")
+    p = Parameters.get("p")
+    cap = Parameters.get("cap")
+    s = Parameters.get("s")
+    h = Parameters.get("h")
+    a = Parameters.get("a")
+    a_ratio = Parameters.get("a_ratio")
     if demand_data:
-        print("Demand data:", demand_data)
+        print("Demand data:", d)
         # If you need demand for a specific time period, e.g., period '2':
-        demand_period_2 = demand_data.get("2")
+        demand_period_2 = d.get("2")
         if demand_period_2 is not None:
             print("Demand for period 2:", demand_period_2)
     else:
         print("Demand data ('d') not found in parameters.")
     
     # To get the production cost dictionary 'p':
-    production_cost_data = Parameters.get("p")
+    p = Parameters.get("p")
     if production_cost_data:
-        print("Production cost data:", production_cost_data)
+        print("Production cost data:", p)
         # If you need production cost for a specific time period, e.g., period '1':
-        production_cost_period_1 = production_cost_data.get("1")
+        production_cost_period_1 = p.get("1")
         if production_cost_period_1 is not None:
             print("Production cost for period 1:", production_cost_period_1)
     else:
