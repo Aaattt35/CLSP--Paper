@@ -1,23 +1,4 @@
-def build_Shp(T, s, p, h, d, cap):   
-   """
-    Build the Shp (short-horizon partitioning) CLSP model.
-
-    This formulation partitions the demand horizon using variables Z_(t,j),
-    representing the fraction of demand from interval t..j-1 that is assigned
-    to production period t.
-
-    Args:
-        T   (int): number of periods
-        s   (dict[int,float]): setup cost
-        p   (dict[int,float]): production cost
-        h   (dict[int,float]): inventory holding cost
-        d   (dict[int,float]): demand
-        cap (dict[int,float]): capacity
-
-    Returns:
-        shp (ConcreteModel)
-    """
-
+def build_Shp(T, s, p, h, d, cap):    
     shp = ConcreteModel()  
 
     shp.T   = Set(initialize=list(range(1, T+2)))
@@ -47,41 +28,27 @@ def build_Shp(T, s, p, h, d, cap):
 
 
 
-    # ===========================================================
-    # Objective Function
-    # Minimize: Σ_{t} A_t y_t + Σ_{t<j} v_tj Z_tj
-    # ===========================================================
+    # Objective Function: Minimize sum_{t=1}^{T}{(A_tY_t+\sum_{q=t+1}^{T+1}{v_{tq}Z_{tq}})}
     def obj_expr(shp):      
         return sum(v_tj[(t, j)] * shp.Z[(t, j)] for (t, j) in shp.Z.keys()) + sum(s[t] * shp.y[t] for t in shp.J)   
     shp.obj = Objective(rule=obj_expr, sense='minimize')
 
     # Subject to: 
-    # ===========================================================
-    # SH1: Capacity constraint
-    #     Σ_{j>t} d_tj * Z_tj ≤ cap[t]
-    # ===========================================================
+    # SH1: Capacity Constraint  
     def sh1_rule(shp, t):  
         return sum(shp.Z[(t, j)] * d_tj[(t, j)] for j in shp.T if t < j) <= cap[t]  
     shp.SH1 = Constraint(shp.J, rule=sh1_rule)
-    # ===========================================================
-    # SH2: Partitioning constraints
-    #  For t = 1: Σ_{j>1} Z(1,j) = 1
-    #  For t > 1: Σ_{j < t} Z(j,t) = Σ_{k > t} Z(t,k)
-    #
-    #  This ensures the Z variables form a proper interval partition.
-    # ===========================================================
+
+    # SH2: sum_{j>1} Z(1 j) == 1
     def sh2_rule(shp, t):
         if t==1:
             return sum(shp.Z[(t, j)] for j in shp.T if t < j) == 1
         else:
             return sum(shp.Z[(j, t)] for j in shp.T if j < t) == sum(shp.Z[(t, k)] for k in shp.T if t < k)
     shp.SH2 = Constraint(shp.J, rule=sh2_rule)
-    # ===========================================================
-    # SH3: Linking constraint
-    #     Σ_{j>t} Z(t,j) ≤ y_t
-    #
-    #  Ensures production period t must be opened (y_t=1) if used.
-    # ===========================================================
+
+
+    # SH3: sum_{j>t} Z(t j) <= y(t) : Capacity constraint
     def sh3_rule(shp,t):
         return sum(shp.Z[(t, j)] for j in shp.T if t < j) <= shp.y[t]
     shp.SH3 = Constraint(shp.J, rule=sh3_rule)
