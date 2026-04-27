@@ -2,7 +2,7 @@
 Run optimization experiment for a given instance.
 Connects to the CLSP optimization models.
 """
-import cplex
+#import cplex
 import random
 import time
 from pyomo.environ import * 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # =======================================================Defining Solve and Report Functions==========================================================
-def solve_and_report(DP_t, model, label, time_L, solver_type='cplex'):
+def solve_and_report(DP_t, model, label, time_L, solver_type='highs'):
     
     time_limit = time_L
     # Determine status
@@ -234,7 +234,7 @@ for f in F:
                 # Run in a loop
                 for label, builder in models_to_solve:
                     mdl = builder()  # build the Pyomo model
-                    c_t, s_t, o_f, stat = solve_and_report(DP_r_t_s, mdl, label, T_L, solver_type='cplex')
+                    c_t, s_t, o_f, stat = solve_and_report(DP_r_t_s, mdl, label, T_L, solver_type='highs')
                     new_rec = (ins, label, f, c, T, i_n, o_f, c_t, s_t, stat, T_stage)
                     Result_run = np.append(Result_run, np.array(new_rec, dtype=Result_form))
                     StaT.append(stat)
