@@ -26,11 +26,11 @@ if __name__ == "__main__":
     instance_path = os.path.abspath(instance_file)
 
     # ---- Run the optimization model ----
-    status, objective, x_values = Read_input(instance_path)
+    T, d, p, cap, s, h, a, a_ratio, h_tj = Read_input(instance_path)
 
     # ---- Print results ----
-    print("\n=== Optimization Results ===")
-    print("Status:", status)
-    for i, val in enumerate(x_values, start=1):
-        print(f"x{i} = {val:.4f}")
-    print("Objective value (Z):", objective)
+    print("\n=== Parameters===")
+    print("Time horizon:", T)
+    #for i, val in enumerate(x_values, start=1):
+      #  print(f"x{i} = {val:.4f}")
+    #print("Objective value (Z):", objective)
