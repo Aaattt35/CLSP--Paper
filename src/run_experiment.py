@@ -5,7 +5,7 @@ Connects to the CLSP optimization model.
 
 import sys
 import os
-from model import solve_model  # new: import the solver function
+from Read_input_txt_file import Read_input  # new: import the solver function
 
 def read_instance(path):
     data = {}
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     instance_path = os.path.abspath(instance_file)
 
     # ---- Run the optimization model ----
-    status, objective, x_values = solve_model(instance_path)
+    status, objective, x_values = Read_input(instance_path)
 
     # ---- Print results ----
     print("\n=== Optimization Results ===")
