@@ -60,17 +60,6 @@ def compute_bounds(T, d, cap):
 
 
     def DP_CLSP(T, s, p, h, d, cap, timelimit=100):
-    """
-    Dynamic Programming approach to solve CLSP problem with a time limit.
-    
-    Args:
-        T (int): planning horizon.
-        s, p, h, d, cap (dict[int, float]): setup, production, holding costs, demand, capacity.
-        timelimit (int): maximum allowed time in seconds.
-        
-    Returns:
-        F_t_s (dict): memoization dictionary containing minimal costs for each state.
-    """
     print("Dp is stating.............................................................")
     print(f"DP timelimit: {timelimit:.3f} seconds")
     dur = 0
