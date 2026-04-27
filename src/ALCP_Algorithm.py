@@ -31,7 +31,7 @@ def q_Operator(period, R_cap, start_point, jump_step, time_h):
 
 
 #### upper bound m suggested by ALCP algorithm 
-def ALCP_sgg_m():      #ALCP suggestion for m 
+def ALCP_sgg_m(T, cap, d):      #ALCP suggestion for m 
     start = timer()
     
     m_hat = {t: T - t + 1 for t in range(1, T+1)}
