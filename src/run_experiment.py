@@ -180,7 +180,7 @@ for f in F:
                 f_min = f[0]
                 f_max = f[1]
                 #d, p, cap, s, h, a, ar = model_parameters(T, c, f_min, f_max)
-                m = ALCP_sgg_m(T, cap, d)
+                m = ALCP_sgg_m(T, cap, d, c)
                 
                 consecutive = {k: v for k, v in ar.items() if k[1] == k[0] + 1}
                 SF=np.array(list(consecutive.values()))
