@@ -37,7 +37,7 @@ if __name__ == "__main__":
     h = Parameters.get("h")
     a = Parameters.get("a")
     a_ratio = Parameters.get("a_ratio")
-    if demand_data:
+    if d:
         print("Demand data:", d)
         # If you need demand for a specific time period, e.g., period '2':
         demand_period_2 = d.get("2")
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     
     # To get the production cost dictionary 'p':
     p = Parameters.get("p")
-    if production_cost_data:
+    if p:
         print("Production cost data:", p)
         # If you need production cost for a specific time period, e.g., period '1':
         production_cost_period_1 = p.get("1")
