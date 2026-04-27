@@ -1,6 +1,6 @@
 # m_agg : modified agg model
 def build_m_Agg(T, s, p, h, d, cap): 
-  """
+    """
     Builds and returns the aggregated CLSP optimization model (m_agg).
 
     Args:
@@ -15,7 +15,7 @@ def build_m_Agg(T, s, p, h, d, cap):
 
     m_agg.T = Set(initialize=list(range(1, T+1)))  
 
-  # Decision variables
+    # Decision variables
     m_agg.X = Var(m_agg.T, within=NonNegativeReals)   
     m_agg.y = Var(m_agg.T, within=Binary)            
     m_agg.I = Var(m_agg.T, within=NonNegativeReals) 
