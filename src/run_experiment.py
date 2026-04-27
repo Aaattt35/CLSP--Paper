@@ -11,7 +11,7 @@ from Read_input_txt_file import Read_input  # new: import the solver function
 from build_AGG_model import build_m_Agg
 from build_FAL_model import build_Fal
 from build_SHP_model import build_Shp
-from build_TPM-m_model import build_TPM_m
+from build_TPM_m_model import build_TPM_m
 from build_TPM_model import build_Tpm
 from build_dp_solver import DP_CLSP
 from build_envl_model import build_Agg_envl
