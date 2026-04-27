@@ -25,6 +25,7 @@ from build_dp_solver import DP_CLSP
 from build_envl_model import build_Agg_envl
 from build_weakenvl_model import build_Agg_weakenvl
 from build_weakl_model import build_Agg_weakl
+from ALCP_Algorithm import ALCP_sgg_m
 
 
 def read_instance(path):
@@ -179,7 +180,7 @@ for f in F:
                 f_min = f[0]
                 f_max = f[1]
                 #d, p, cap, s, h, a, ar = model_parameters(T, c, f_min, f_max)
-                m = find_m_cap_based_al_S()
+                m = ALCP_sgg_m()
                 
                 consecutive = {k: v for k, v in ar.items() if k[1] == k[0] + 1}
                 SF=np.array(list(consecutive.values()))
