@@ -138,7 +138,7 @@ def _extract_parameters(instance: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def solve_model(file_path: str):
+def Read_input(file_path: str):
     """
     Reads instance, extracts parameters, dumps a JSON-safe parameter file,
     and returns placeholder (status, objective, x_values).
@@ -169,11 +169,4 @@ def solve_model(file_path: str):
         print(f"{k}: {v}")
     print("========================================")
 
-    output_path = os.path.join("output", "extracted_params.json")
-    _ensure_output_dir(output_path)
-
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(params, f, indent=2, ensure_ascii=False)
-
-    # Placeholder solver output
-    return "ok", None, {}
+    return params
