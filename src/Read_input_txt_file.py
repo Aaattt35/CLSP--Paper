@@ -164,9 +164,4 @@ def Read_input(file_path: str):
 
     params = _extract_parameters(instance)
 
-    print("=== Extracted Parameters (JSON-safe) ===")
-    for k, v in params.items():
-        print(f"{k}: {v}")
-    print("========================================")
-
     return params
