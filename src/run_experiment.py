@@ -2,7 +2,15 @@
 Run optimization experiment for a given instance.
 Connects to the CLSP optimization models.
 """
-
+import cplex
+import random
+import time
+from pyomo.environ import * 
+import numpy as np
+from timeit import default_timer as timer 
+import itertools
+def uniform_int(low, high):  
+    return random.randint(low, high)
 import sys
 import os
 import time
