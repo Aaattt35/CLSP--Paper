@@ -1,3 +1,5 @@
+from timeit import default_timer as timer 
+
 ###usable version
 
 def d_cum(a,b):
