@@ -49,7 +49,10 @@ def q_C_k_Opr(period, R_cap, start_point, jump_step, time_h):
 #### upper bound m suggested by ALSP algorithm 
 def ALCP_sgg_m(T, cap, d, c):      #ALCP suggestion for m 
     start = timer()
-    
+    cap = cap
+    T = T
+    c = c
+    d = d
     m_hat = {t: T - t + 1 for t in range(1, T+1)}
     q_r_star = {t: T for t in range(1,T+1)}
     r_star = {t: t for t in range(1,T+1)}
