@@ -2,7 +2,7 @@ from timeit import default_timer as timer
 
 ###ALCP algorithm  
 
-def _ALCP_sgg_m(T, cap, d, c)
+def _ALCP_sgg_m(T, cap, d, c):
 
     start = timer()
     m_hat = {t: T - t + 1 for t in range(1, T+1)}
