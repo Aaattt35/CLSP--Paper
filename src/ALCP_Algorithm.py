@@ -52,7 +52,7 @@ def _ALCP_sgg_m()
         else:
             return 1
 
-    ##### computig r_star(t) and q_r_star[t] = q_Operator(t, cap[t] - d[t], r_star(t), c, T)    
+    ##### computig r_star(t) and q_r_star(t) = q_Operator(t, cap[t] - d[t], r_star(t), c, T)    
     for t in reversed(range(1, T - c)):
         max_r = min(T - 2, T - c + 3)  
         for r in range(t + 2,  max_r):
@@ -99,8 +99,3 @@ def _ALCP_sgg_m()
     ALCP_sgg_m.Time = dur
     return m_hat
     
-    
-    
-    
-    return m_hat
-
