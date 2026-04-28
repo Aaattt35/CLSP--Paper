@@ -96,6 +96,6 @@ def _ALCP_sgg_m()
             m_hat[t] = m_hat_sen_2[t] + ap  #= m_hat[t] + mm + 1                
 
     dur = timer() - start
-    ALCP_sgg_m.Time = dur
+    _ALCP_sgg_m.Time = dur
     return m_hat
     
