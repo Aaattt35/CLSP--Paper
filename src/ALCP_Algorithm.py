@@ -67,7 +67,9 @@ def _ALCP_sgg_m(T, cap, d, c):
                 break
         #### Evaluate whether converting some non‑PPs in range(r_star[t], q_r_star[t] + 1) to PPs 
         #### ,in the worst case, causes period e to start after r_star[e].
-        k_set = {k: k for k in range(r_star[t], q_r_star[t]+1)}
+        print(f"r_star[{t}] = {r_star[t]}")
+        print(f"q_r_star[{t}] = {q_r_star[t]}")
+    
         r_star_set = {k: r_star[k] for k in range(r_star[t], q_r_star[t]+1)}
         Cap_set = {k: cap[k] for k in range(r_star[t], q_r_star[t]+1)}
         e = max(reversed(r_star_set), key=r_star_set.get)
