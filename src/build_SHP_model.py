@@ -1,3 +1,5 @@
+from pyomo.environ import *
+
 def build_Shp(T, s, p, h, d, cap):    
     shp = ConcreteModel()  
 
