@@ -1,4 +1,6 @@
 # m_agg : modified agg model
+from pyomo.environ import *
+
 def build_m_Agg(T, s, p, h, d, cap): 
     """
     Builds and returns the aggregated CLSP optimization model (m_agg).
