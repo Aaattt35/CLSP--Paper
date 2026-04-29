@@ -26,3 +26,9 @@ jobs:
       - name: Run experiment
         run: |
           python src/run_experiment.py instances/test_instance.txt
+
+      - name: Upload single CSV artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-instance-output
+          path: results/test_instance_output.csv
