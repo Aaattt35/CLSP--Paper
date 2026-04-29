@@ -1,4 +1,6 @@
 # build_fal_model.py
+
+from pyomo.environ import *
 def build_Fal(T, s, p, d, cap, h): 
     """
     Build the 'Fal' aggregated CLSP model (Wagner-Whitin type formulation).
