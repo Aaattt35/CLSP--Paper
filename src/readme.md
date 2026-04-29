@@ -1,6 +1,6 @@
 ## 📂 `src/` — Source Code Overview
 
-The `src` directory contains all source code used to build and execute the optimization models developed in this project. 
+The `src` directory contains all the source code used to build and execute the performance evaluation between different CLSP models. All code has been developed by the author within this project.
 
 
 📂- CLSP--Paper/src/
@@ -35,7 +35,7 @@ The `src` directory contains all source code used to build and execute the optim
 
 ├── ├── ⚙️ build_weakenvl_model.py
 
-├── ├── 📄 readme.md
+├── ├── 📄 **readme.md**
 
 ├── ├── 💾 run_experiment.py
 
@@ -66,11 +66,10 @@ However, in the public GitHub version, the solver is switched to **HiGHS**, whic
 requirements.txt
 
 
-- If using a commercial solver (e.g., **CPLEX**): must be pre-installed and Python‑accessible.
+- If you wnat to use a commercial solver (e.g., **CPLEX**): must be pre-installed and Python‑accessible. The solver should be replaced with highs in the main body code:
 
-Install dependencies:
 
-    pip install -r requirements.txt
+      run_experiment.py
 
 
 ---
@@ -115,11 +114,11 @@ Navigate to the project root and execute:
 5. Download:
 test-instance-results
 
-text
-Extract the ZIP and you will find:
-test_instance_output.csv
 
-text
+Extract the ZIP and you will find:
+
+      test_instance_output.csv
+
 
 ---
 
