@@ -1,65 +1,57 @@
-# Reproducible Code for [Paper Title]
+## 📂 `src/` — Source Code Overview
 
-This repository contains the implementation used in the paper:
+The `src` directory contains all source code used to build and execute the optimization models developed in this project. 
 
-**"[Paper Title]"**  
-[Authors]  
-Submitted to *European Journal of Operational Research (EJOR)*.
+📂- CLSP--Paper/src/.
 
-The repository is designed to be minimal, clean, and immediately reproducible for reviewers and readers.
+    📂+ .github/workflows/
+
+    📂+ instances/
+
+    📂+ results/
+
+    📂- src/
+        ⚙️ ALCP_Algorithm.py
+        ⚙️ build_AGG_model.py
+        ⚙️ build_FAL_model.py
+        ⚙️ build_SHP_model.py
+        ⚙️ build_TPM_m_model.py
+        ⚙️ build_TPM_model.py
+        ⚙️ build_dp_solver.py
+        ⚙️ build_envl_model.py
+        ⚙️ build_weakenvl_model.py
+        ⚙️ build_weakl_model.py
+        ⚙️ build_weakenvl_model.py
+        📄 readme.md
+
+│ ├ └── run_experiment.py
+
+├ ├── LICENSE
+
+├ ├── README.md
+
+├ └── requirements.txt
+
+The central script is:
+
+- **`run_experiment.py`**  
+  Main entry point for running experiments. It loads problem instances, builds the relevant models, solves them using the selected solver, and saves the outputs in the `results/` directory.
 
 ---
 
-## Repository Structure
-.
+## 🔧 Solver Usage
 
-├─+ .github/workflows/
+During development, **CPLEX** was used locally for testing due to its robustness and speed.  
+However, in the public GitHub version, the solver is switched to **HiGHS**, which is free and open‑source — allowing anyone to run the code without a commercial license.
 
-│
+---
 
-├─+ instances/
+## ▶️ Running the Optimization Model
 
-│
+To run the optimization model locally, navigate to the project’s root directory and execute:
+```bash
+python src/run_experiment.py
 
-├─+ results/
-
-│
-
-├── src/
-
-│ ├── ALCP_Algorithm.py
-
-│ ├── build_AGG_model.py
-
-│ ├── build_FAL_model.py
-
-│ ├── build_SHP_model.py
-
-│ ├── build_TPM_m_model.py
-
-│ ├── build_TPM_model.py
-
-│ ├── build_dp_solver.py
-
-│ ├── build_envl_model.py
-
-│ ├── build_weakenvl_model.py
-
-│ ├── build_weakl_model.py
-
-│ ├── build_weakenvl_model.py
-
-│ ├── readme.md
-
-│ └── run_experiment.py
-
-│
-
-├── LICENSE
-
-├── README.md
-
-└── requirements.txt
 
 text
 
@@ -181,10 +173,15 @@ The test instance can be executed identically across environments, ensuring repr
 
 ---
 
-## License
+# Reproducible Code for [Paper Title]
 
-- **Code**: MIT License  
-- **Data/Instances**: If applicable, see `instances/DATA_LICENSE.md`
+This repository contains the implementation used in the paper:
+
+**"[Paper Title]"**  
+[Authors]  
+Submitted to *European Journal of Operational Research (EJOR)*.
+
+The repository is designed to be minimal, clean, and immediately reproducible for reviewers and readers.
 
 ---
 
