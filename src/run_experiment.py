@@ -62,6 +62,10 @@ if __name__ == "__main__":
     cap = {int(k): v for k, v in cap.items()}
     d   = {int(k): v for k, v in d.items()}
     s   = {int(k): v for k, v in s.items()}
+    p   = {int(k): v for k, v in p.items()}
+    h   = {int(k): v for k, v in h.items()}
+    a   = {int(k): v for k, v in a.items()}
+    ar  = {int(k): v for k, v in ar.items()}
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # =======================================================Defining Solve and Report Functions==========================================================
