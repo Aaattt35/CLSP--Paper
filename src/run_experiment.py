@@ -268,4 +268,13 @@ for f in F:
                     Bre_Con = Bre_Con + 1     #Break_condition   
                 
                 ins += 1
-                    
+# ======================================================== Save results to CSV ===============================================================
+os.makedirs("results", exist_ok=True)
+pd.DataFrame(Result_run).to_csv("results/test_instance_output.csv", index=False)
+print("✅ Results saved to results/test_instance_output.csv")
+
+
+
+
+
+
