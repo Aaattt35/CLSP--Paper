@@ -43,7 +43,7 @@ The `src` directory contains all the source code used to build and execute the p
 
 ├── 📄 README.md
 
-├── 📄 requirements.txt
+└── 📄 requirements.txt
 
 The central script is:
 
