@@ -72,6 +72,7 @@ def _ALCP_sgg_m(T, cap, d, c):
     
         print(f"r_star[{t}] = {r_star[t]}")
         print(f"q_r_star[{t}] = {q_r_star[t]}")
+        max_r_star_s = T
         if r_star[t] < q_r_star[t]:
             r_star_set = {k: r_star[k] for k in range(r_star[t], q_r_star[t]+1)}
             Cap_set = {k: cap[k] for k in range(r_star[t], q_r_star[t]+1)}
