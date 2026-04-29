@@ -1,5 +1,7 @@
 #TPM-m: Transferring Present Demand to Previous Manufacturing Periods Within an m-Period Window
 
+from pyomo.environ import *
+
 def build_TPM_m(m, T, s, p, d, cap, h):
     
     tpm_m = ConcreteModel()  
