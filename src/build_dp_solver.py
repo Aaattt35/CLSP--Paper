@@ -3,6 +3,7 @@ import time
 from functools import lru_cache
 from pyomo.environ import SolverFactory, value
 from time import time as now_time
+from timeit import default_timer as timer
 
 def compute_bounds(T, d, cap):
     """
@@ -59,7 +60,7 @@ def compute_bounds(T, d, cap):
 
 
 
-def DP_CLSP(T, s, p, h, d, cap, timelimit=100):
+def DP_CLSP(T, s, p, h, d, cap, timelimit = 300):
     print("Dp is stating.............................................................")
     print(f"DP timelimit: {timelimit:.3f} seconds")
     dur = 0
@@ -67,12 +68,13 @@ def DP_CLSP(T, s, p, h, d, cap, timelimit=100):
     T_set = {t for t in range(1, T+1)}
     L, U = compute_bounds(T, d, cap)
     
-    F_t_s = {}
-    
+    F_t_s = {}  
     for t in T_set:
+        if(timer() - start >= timelimit):
+            print(f"DP Solv_t: {dur:.3f} seconds")
+            break
         if t==1:
-            for I_t in range(L[t], U[t]+1):
-                            
+            for I_t in range(L[t], U[t]+1):             
                 x_min = max(0, (I_t + d[t]))
                 x_max = min(cap[t], (I_t + d[t]))
                 rund_1 = False
@@ -80,12 +82,9 @@ def DP_CLSP(T, s, p, h, d, cap, timelimit=100):
                 min_F_1_s = p[t]*x_min + s[t] + h[t]*I_t
                 for x_1 in range(x_min, x_max+1):
                     F_1_s_x = p[t]*x_1 + s[t] + h[t]*I_t
-                    
                     if F_1_s_x < min_F_1_s :
-                        min_F_1_s = F_1_s_x
-                            
+                        min_F_1_s = F_1_s_x       
                 F_t_s[t, I_t] = min_F_1_s                
-
         else:
             for I_t in range(L[t], U[t]+1):
                 x_min = min(cap[t], max(0, (I_t + d[t] - U[t-1])))
@@ -105,14 +104,7 @@ def DP_CLSP(T, s, p, h, d, cap, timelimit=100):
                         else:
                             min_F_t_s = p[t]*x_t + s[t]*y_t + h[t]*I_t + F_t_s[(t-1), prev_I]
                             rund_1 = True
-
-                F_t_s[t, I_t] = min_F_t_s
-                
-        dur = timer() - start        
-        if(dur >= timelimit):
-            print(f"DP Solv_t: {dur:.3f} seconds")
-            break
-    
-    
-    DP_CLSP.Time = dur        
+                F_t_s[t, I_t] = min_F_t_s           
+        
+    DP_CLSP.Time = timer() - start        
     return F_t_s
