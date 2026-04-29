@@ -13,37 +13,30 @@ The repository is designed to be minimal, clean, and immediately reproducible fo
 ## Repository Structure
 .
 
-├── README.md
-
-├── LICENSE
-
-├── requirements.txt
-
+├─+ .github/workflows/
 │
-
+├─+ instances/
+│
+├─+ results/
+│
 ├── src/
-
-│ ├── model.py
-
+│ ├── ALCP_Algorithm.py
+│ ├── build_AGG_model.py
+│ ├── build_FAL_model.py
+│ ├── build_SHP_model.py
+│ ├── build_TPM_m_model.py
+│ ├── build_TPM_model.py
+│ ├── build_dp_solver.py
+│ ├── build_envl_model.py
+│ ├── build_weakenvl_model.py
+│ ├── build_weakl_model.py
+│ ├── build_weakenvl_model.py
+│ ├── readme.md
 │ └── run_experiment.py
-
 │
-
-├── instances/
-
-│ └── test_instance.txt
-
-│
-
-├── results/
-
-│ └── test_instance_output.csv
-
-│
-
-└── .github/workflows/
-
-└── run.yml
+├── LICENSE
+├── README.md
+└── requirements.txt
 
 text
 
