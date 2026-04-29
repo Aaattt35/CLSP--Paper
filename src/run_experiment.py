@@ -56,16 +56,31 @@ if __name__ == "__main__":
     cap = Parameters.get("cap")
     s = Parameters.get("s")
     h = Parameters.get("h")
-    a = Parameters.get("a")
-    ar = Parameters.get("a_ratio")
 
     cap = {int(k): v for k, v in cap.items()}
     d   = {int(k): v for k, v in d.items()}
     s   = {int(k): v for k, v in s.items()}
     p   = {int(k): v for k, v in p.items()}
     h   = {int(k): v for k, v in h.items()}
-    a   = {int(k): v for k, v in a.items()}
-    ar  = {int(k): v for k, v in ar.items()}
+    
+    T_set = {t for t in range(1, T+1)}
+    # h_{tj} = sum_{t=k}^{p-1} h_t for k < p  
+    h_tj = {}  
+    for t in T_set:  
+        for j in T_set:  
+            if t < j:  
+                h_tj[(t, j)] = sum(h[k] for k in range(t, j))
+    
+    # a(tj) for t<j (j is the orgin period in LFL solution)  
+    a = {}
+    a_ratio = {}
+    # a(tj) = s(j) - (h(tj) - p(j) + p(t)) * d(j)  for t<j, j=2..T  
+    for t in T_set:  
+        for j in T_set:  
+            if t < j:  
+                a[(t, j)] = s[j] - (h_tj[(t, j)] - p[j] + p[t]) * d[j]
+                a_ratio[(t,j)] = (s[j] + p[j]*d[j])/((h_tj[(t, j)] + p[t]) * d[j])
+ 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # =======================================================Defining Solve and Report Functions==========================================================
