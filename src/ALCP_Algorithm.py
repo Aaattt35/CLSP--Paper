@@ -77,7 +77,7 @@ def _ALCP_sgg_m(T, cap, d, c):
             Cap_set = {k: cap[k] for k in range(r_star[t], q_r_star[t]+1)}
             e = max(reversed(r_star_set), key=r_star_set.get)
             max_r_star_s = r_star_set[e]
-        print(f"r_star_set = {r_star_set}")
+            print(f"r_star_set = {r_star_set}")
         if (max_r_star_s < T):
             R_cap = cap[t] - d[t] + d[e] 
             R_cap_0= cap[t] - d[t] + d[e]
