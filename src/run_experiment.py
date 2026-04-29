@@ -131,7 +131,19 @@ def solve_and_report(DP_t, model, label, time_L, solver_type='highs'):
         cal_time = end - start 
     
 
-    sys_time = res.solver.time
+    solver_info = res.solver
+    sys_time = getattr(solver_info, 'time', None)
+    if sys_time is None:
+        for candidate in ['user_time', 'wallclock_time', 'system_time', 'cpu_time']:
+            sys_time = getattr(solver_info, candidate, None)
+            if sys_time is not None:
+                break
+
+    if sys_time is None:
+        print(f"time of {label} reported by sys: <not provided by solver>")
+        sys_time = cal_time
+    else:
+        print(f"time of {label} reported by sys: {sys_time}")
 
     #print(f"--- {label} ---")
     try:
