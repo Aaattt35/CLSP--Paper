@@ -27,6 +27,16 @@ from build_weakenvl_model import build_Agg_weakenvl
 from build_weakl_model import build_Agg_weakl
 from ALCP_Algorithm import _ALCP_sgg_m
 
+from pyomo.core.base.data import UndefinedData
+
+def clean_value(x):
+    """Convert None or Pyomo UndefinedData to NaN. Otherwise return float(x)."""
+    if x is None or isinstance(x, UndefinedData):
+        return float('nan')
+    try:
+        return float(x)
+    except:
+        return float('nan')
 
 def read_instance(path):
     data = {}
@@ -165,7 +175,14 @@ def solve_and_report(DP_t, model, label, time_L, solver_type='highs'):
         opt_val = value(model.obj())
     except Exception:
         opt_val = None
-    
+        
+    c = clean_value(c)
+    s = clean_value(s)
+    f = clean_value(f)
+    o_f = clean_value(o_f)
+    sys_time = clean_value(sys_time)
+    opt_val = clean_value(opt_val)
+    status = clean_value(status)
     line = (f"{label}, {T},  {c},  {f},  "
             f"{cal_time:.3f}, {sys_time:.3f},  "
             f"{opt_val}, {status}")
