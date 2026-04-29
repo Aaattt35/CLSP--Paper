@@ -113,7 +113,7 @@ def solve_and_report(DP_t, model, label, T_L, c, f, solver_type='highs'):
         start = time.time()
         res = solver.solve(model, tee=False)
         end = time.time()
-        cal_time = end - start + find_m_cap_based_al_S.Time 
+        cal_time = end - start + _ALCP_sgg_m.Time 
     
     elif(label == "envl"):
         solver = SolverFactory(solver_type)
