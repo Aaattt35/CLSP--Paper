@@ -93,7 +93,7 @@ if __name__ == "__main__":
  
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 # =======================================================Defining Solve and Report Functions==========================================================
-def solve_and_report(DP_t, model, label, time_L, solver_type='highs'):
+def solve_and_report(DP_t, model, label, time_L, solver_type='highs', c, f):
     
     time_limit = time_L
     # Determine status
@@ -174,7 +174,7 @@ def solve_and_report(DP_t, model, label, time_L, solver_type='highs'):
     except Exception:
         opt_val = None
         
-    #c = clean_value(c)
+    c = clean_value(c)
     #s = clean_value(s)
     f = clean_value(f)
     o_f = clean_value(o_f)
@@ -256,7 +256,7 @@ for f in F:
                 # Run in a loop
                 for label, builder in models_to_solve:
                     mdl = builder()  # build the Pyomo model
-                    c_t, s_t, o_f, stat = solve_and_report(DP_r_t_s, mdl, label, T_L, solver_type='highs')
+                    c_t, s_t, o_f, stat = solve_and_report(DP_r_t_s, mdl, label, T_L, solver_type='highs', c, f)
                     new_rec = (ins, label, f, c, T, i_n, o_f, c_t, s_t, stat, T_stage)
                     Result_run = np.append(Result_run, np.array(new_rec, dtype=Result_form))
                     StaT.append(stat)
