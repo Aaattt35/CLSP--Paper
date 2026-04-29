@@ -27,14 +27,14 @@ from build_weakenvl_model import build_Agg_weakenvl
 from build_weakl_model import build_Agg_weakl
 from ALCP_Algorithm import _ALCP_sgg_m
 
-from pyomo.core.base.data import UndefinedData
+from pyomo.environ import value
 
 def clean_value(x):
-    """Convert None or Pyomo UndefinedData to NaN. Otherwise return float(x)."""
-    if x is None or isinstance(x, UndefinedData):
-        return float('nan')
     try:
-        return float(x)
+        v = value(x)      # اگر Pyomo variable باشد، مقدارش را می‌گیرد
+        if v is None:
+            return float('nan')
+        return float(v)
     except:
         return float('nan')
 
