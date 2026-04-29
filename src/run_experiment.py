@@ -58,6 +58,10 @@ if __name__ == "__main__":
     h = Parameters.get("h")
     a = Parameters.get("a")
     ar = Parameters.get("a_ratio")
+
+    cap = {int(k): v for k, v in cap.items()}
+    d   = {int(k): v for k, v in d.items()}
+    s   = {int(k): v for k, v in s.items()}
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 
 # =======================================================Defining Solve and Report Functions==========================================================
