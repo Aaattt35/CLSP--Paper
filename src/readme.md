@@ -2,30 +2,48 @@
 
 The `src` directory contains all source code used to build and execute the optimization models developed in this project. 
 
-📂- CLSP--Paper/src/.
 
-    📂+ .github/workflows/
-    📂+ instances/
-    📂+ results/
-    📂- src/
-    
-        ⚙️ ALCP_Algorithm.py
-        ⚙️ build_AGG_model.py
-        ⚙️ build_FAL_model.py
-        ⚙️ build_SHP_model.py
-        ⚙️ build_TPM_m_model.py
-        ⚙️ build_TPM_model.py
-        ⚙️ build_dp_solver.py
-        ⚙️ build_envl_model.py
-        ⚙️ build_weakenvl_model.py
-        ⚙️ build_weakl_model.py
-        ⚙️ build_weakenvl_model.py
-        📄 readme.md
-        💾 run_experiment.py
+📂- CLSP--Paper/src/
 
-    🧾 LICENSE
-    📄 README.md
-    📄 requirements.txt
+├── 📂+ .github/workflows/
+
+├── 📂+ instances/
+
+├── 📂+ results/
+
+├── 📂- src/
+
+├── ├── ⚙️ ALCP_Algorithm.py
+
+├── ├── ⚙️ build_AGG_model.py
+
+├── ├── ⚙️ build_FAL_model.py
+
+├── ├── ⚙️ build_SHP_model.py
+
+├── ├── ⚙️ build_TPM_m_model.py
+
+├── ├── ⚙️ build_TPM_model.py
+
+├── ├── ⚙️ build_dp_solver.py
+
+├── ├── ⚙️ build_envl_model.py
+
+├── ├── ⚙️ build_weakenvl_model.py
+
+├── ├── ⚙️ build_weakl_model.py
+
+├── ├── ⚙️ build_weakenvl_model.py
+
+├── ├── 📄 readme.md
+
+├── ├── 💾 run_experiment.py
+
+├── 🧾 LICENSE
+
+├── 📄 README.md
+
+├── 📄 requirements.txt
 
 The central script is:
 
@@ -47,8 +65,6 @@ To run the optimization model locally, navigate to the project’s root director
 ```bash
 python src/run_experiment.py
 
-
-text
 
 - **src/** – optimization model and experiment controller  
 - **instances/** – input data files  
