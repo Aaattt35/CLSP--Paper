@@ -58,6 +58,8 @@ def _ALCP_sgg_m(T, cap, d, c):
         max_r = min(T - 2, T - c + 3)  
         for r in range(t + 2,  max_r):
             print(f".............r = {r}")
+            print("Checking cap for t:", t)
+            print("cap keys:", list(cap.keys())[:10], "...", list(cap.keys())[-10:])
             q_r_t = q_Operator(t, cap[t] - d[t], r, c, T)
             q_rplus1_r = q_Operator(r, cap[r] - d[r], r + 1, c, T)
             print(f"q_r_t = {q_r_t}")
