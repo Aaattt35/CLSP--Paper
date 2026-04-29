@@ -92,16 +92,6 @@ if __name__ == "__main__":
                 a_ratio[(t,j)] = (s[j] + p[j]*d[j])/((h_tj[(t, j)] + p[t]) * d[j])
  
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------------------------------------------------------------------------------
-
-# ===============================================Main body of Running optimization experiments over all models=======================================
-
-T_h = [90]     #, 100, 120, 150, 200, 300, 500, 1000, 2000,  
-C =[2]        #36, 26, 18, 12, 8, 5 , 3 , 2   
-F= [ (400, 1200) ]   #, (2400, 2800), (5600, 6400), (12800, 19200)
-noi = [1] #, 2, 3, 4 #number of Instance 
-T_L = 1800  #Time limit for running each model
 # =======================================================Defining Solve and Report Functions==========================================================
 def solve_and_report(DP_t, model, label, time_L, solver_type='highs'):
     
@@ -173,7 +163,6 @@ def solve_and_report(DP_t, model, label, time_L, solver_type='highs'):
         #print("Optimal objective value: not available")
         pass
 
-
     try:
         status = str(res.solver.termination_condition)
     except Exception:
@@ -185,7 +174,7 @@ def solve_and_report(DP_t, model, label, time_L, solver_type='highs'):
     except Exception:
         opt_val = None
         
-    c = clean_value(c)
+    #c = clean_value(c)
     s = clean_value(s)
     f = clean_value(f)
     o_f = clean_value(o_f)
@@ -200,7 +189,15 @@ def solve_and_report(DP_t, model, label, time_L, solver_type='highs'):
     print(line)    
     
     return cal_time, sys_time, opt_val, status
+# ---------------------------------------------------------------------------------------------------------------------------------------------------
 
+# ===============================================Main body of Running optimization experiments over all models=======================================
+
+T_h = [90]     #, 100, 120, 150, 200, 300, 500, 1000, 2000,  
+C =[2]        #36, 26, 18, 12, 8, 5 , 3 , 2   
+F= [ (400, 1200) ]   #, (2400, 2800), (5600, 6400), (12800, 19200)
+noi = [1] #, 2, 3, 4 #number of Instance 
+T_L = 1800  #Time limit for running each model
 
 Result_form = np.dtype([
     ('Prob_N', np.int32),
