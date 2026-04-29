@@ -187,7 +187,7 @@ Result_form = np.dtype([
 ])
 
 Result_run = np.empty(0, dtype=Result_form)
-Params = []
+
 ins = 1
 
 for f in F:
@@ -205,35 +205,6 @@ for f in F:
                 #d, p, cap, s, h, a, ar = model_parameters(T, c, f_min, f_max)
                 m = _ALCP_sgg_m(T, cap, d, c)
                 
-                consecutive = {k: v for k, v in ar.items() if k[1] == k[0] + 1}
-                SF=np.array(list(consecutive.values()))
-                
-                
-                descr = {
-                    'n': SF.size +1,
-                    'min': f"{SF.min():.3f}",
-                    '25%': f"{np.percentile(SF, 25):.3f}",
-                    'median': f"{np.median(SF):.3f}",
-                    '75%': f"{np.percentile(SF, 75):.3f}",
-                    'max': f"{SF.max():.3f}",
-                    'mean': f"{SF.mean():.3f}",
-                    'std': f"{SF.std(ddof=1):.3f}",  # sample std
-                    'IQR': f"{np.percentile(SF, 75) - np.percentile(SF, 25):.3f}",
-                }
-                
-                Params.append({
-                    'ins': ins,
-                    'f': f,
-                    'c': c,
-                    'T': T,
-                    'i_n': i_n,
-                    'stat': descr,
-                    'd': d_o,
-                    'p': p,
-                    'cap': cap,
-                    's': s,
-                    'h': h,
-                })
                 # Defining parial DP to be used in envl and weakl
                 DP_r = DP_CLSP(T_stage, s, p, h, d, cap) #Dp partial results
                 max_I_DP = max(k[0] for k in DP_r.keys())  #maximum I provided by partial DP if it took time more than DP time limit to reach T_stage
@@ -271,6 +242,4 @@ for f in F:
                     Bre_Con = Bre_Con + 1     #Break_condition   
                 
                 ins += 1
-                print(ins)
-                print(descr)
                     
