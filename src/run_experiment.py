@@ -177,7 +177,6 @@ def solve_and_report(DP_t, model, label, T_L, c, f, solver_type='highs'):
     c = clean_value(c)
     #s = clean_value(s)
     f = clean_value(f)
-    o_f = clean_value(o_f)
     sys_time = clean_value(sys_time)
     opt_val = clean_value(opt_val)
     status = clean_value(status)
