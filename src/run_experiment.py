@@ -207,12 +207,12 @@ for f in F:
                 
                 # Defining parial DP to be used in envl and weakl
                 DP_r = DP_CLSP(T_stage, s, p, h, d, cap) #Dp partial results
-                max_I_DP = max(k[0] for k in DP_r.keys())  #maximum I provided by partial DP if it took time more than DP time limit to reach T_stage
-                T_stage = max_I_DP
+                T_stage = max(t for (t, _) in DP_r.keys())
+
                 
                 DP_r_t_s = DP_CLSP.Time
                 print(f"time of Par_DP reported by sys: {DP_r_t_s}")
-                
+                print(f"T_stages: {T_stage}")
                 # Define a list of model builders and their arguments
                 models_to_solve = [
                     ("M_Agg", lambda: build_m_Agg(T, s, p, h, d, cap)),
