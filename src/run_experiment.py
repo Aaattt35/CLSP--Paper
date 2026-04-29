@@ -109,7 +109,7 @@ def solve_and_report(DP_t, model, label, T_L, c, f, solver_type='highs'):
     
     elif(label == "TPM_m"):
         solver = SolverFactory(solver_type)
-        solver.options['timelimit'] = time_limit - find_m_cap_based_al_S.Time
+        solver.options['timelimit'] = time_limit - _ALCP_sgg_m.Time
         start = time.time()
         res = solver.solve(model, tee=False)
         end = time.time()
