@@ -16,7 +16,7 @@ The purpose of this repository is to ensure complete computational reproducibili
 
 ├── 📂+ results/
 
-├── 📂- src/
+├── 📂+ src/
 
 ├── 🧾 LICENSE
 
