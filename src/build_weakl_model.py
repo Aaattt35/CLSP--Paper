@@ -2,6 +2,8 @@
 # File: agg_weakl.py
 # agg_weakl : modified agg model + constraint(12)
 # ============================================
+from pyomo.environ import *
+
 def build_Agg_weakl(DP_r, T, s, p, h, d, cap):
     """
 
