@@ -1,5 +1,7 @@
 # build_tpm_model.py
 # TPM: Transforming PPs into Non-PPs with Modification (TPM)
+from pyomo.environ import *
+
 def build_Tpm(T, s, p, d, cap, h):
     """
     TPM: Transferring Present Demand to Previous Manufacturing Periods.
