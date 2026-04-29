@@ -3,6 +3,8 @@
 # agg_weakenvl : modified agg model + constraint(12)
 # Using convex hull linear cuts
 # ============================================
+
+from pyomo.environ import *
 def build_Agg_weakenvl(DP_r, T, s, p, h, d, cap):
     
     DP_out = DP_r
