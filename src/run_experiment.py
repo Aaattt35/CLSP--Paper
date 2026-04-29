@@ -94,8 +94,8 @@ if __name__ == "__main__":
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 # =======================================================Defining Solve and Report Functions==========================================================
 def solve_and_report(DP_r_t_s, mdl, label, T_L, c, f, solver_type='highs'):
-    
-    time_limit = time_L
+    DP_t = DP_r_t_s
+    time_limit = T_L
     # Determine status
     status = "Unknown"    
     
