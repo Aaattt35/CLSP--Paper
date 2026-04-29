@@ -5,11 +5,8 @@ The `src` directory contains all source code used to build and execute the optim
 📂- CLSP--Paper/src/.
 
     📂+ .github/workflows/
-
     📂+ instances/
-
     📂+ results/
-
     📂- src/
     
         ⚙️ ALCP_Algorithm.py
@@ -24,14 +21,11 @@ The `src` directory contains all source code used to build and execute the optim
         ⚙️ build_weakl_model.py
         ⚙️ build_weakenvl_model.py
         📄 readme.md
+        💾 run_experiment.py
 
-│ ├ └── run_experiment.py
-
-├ ├── LICENSE
-
-├ ├── README.md
-
-├ └── requirements.txt
+    🧾 LICENSE
+    📄 README.md
+    📄 requirements.txt
 
 The central script is:
 
