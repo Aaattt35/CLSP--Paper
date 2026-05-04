@@ -60,7 +60,7 @@ def _ALCP_sgg_m(T, cap, d, c):
 
     
 
-    def _Delta_(period_a, period_b, period_c, period_d):
+    def _Delta_(a, period_a, period_b, period_c, period_d):
         t = period_a
         r = period_b
         q_r_t = period_c 
@@ -84,7 +84,7 @@ def _ALCP_sgg_m(T, cap, d, c):
             q_rplus1_r = q_Operator(r, cap[r] - d[r], r + 1, c, T)
             if (q_r_t == T or q_rplus1_r == T or r >= q_r_t):
                 break
-            if (_Delta_(t, r, q_r_t, q_rplus1_r) < 0):
+            if (_Delta_(a, t, r, q_r_t, q_rplus1_r) < 0):
                 q_r_star[t] = q_r_t
                 r_star[t] = r
                 m_hat_sen_2[t] = q_r_t - t #m_hat from second senario
