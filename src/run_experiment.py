@@ -198,21 +198,7 @@ F= [ (400, 1200) ]   #, (2400, 2800), (5600, 6400), (12800, 19200)
 noi = [1] #, 2, 3, 4 #number of Instance 
 T_L = 1800  #Time limit for running each model
 
-Result_form = np.dtype([
-    ('Prob_N', np.int32),
-    ('Model_N', 'U16'),   # Unicode string, up to 16 characters
-    ('F', np.int32, (2,)),
-    ('c', np.int32),
-    ('T', np.int32),
-    ('Sample', np.int32),
-    ('Obj_F', np.float64),
-    ('Solv_T', np.float64),
-    ('SYS_Rep_T', np.float64),    #system reported time
-    ('Solv_Status', 'U16'),  # Unicode string
-    ('T_stage', np.int32),
-])
-
-Result_run = np.empty(0, dtype=Result_form)
+Result_run = []
 
 ins = 1
 
