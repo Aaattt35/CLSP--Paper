@@ -229,7 +229,7 @@ for f in F:
                 f_min = f[0]
                 f_max = f[1]
                 #d, p, cap, s, h, a, ar = model_parameters(T, c, f_min, f_max)
-                m = _ALCP_sgg_m(T, cap, d, c)
+                m = _ALCP_sgg_m(T, cap, d, c, h)
                 
                 # Defining parial DP to be used in envl and weakl
                 DP_r = DP_CLSP(T_stage, s, p, h, d, cap) #Dp partial results
