@@ -10,7 +10,26 @@ def _ALCP_sgg_m(T, cap, d, c):
     q_r_star = {t: T for t in range(1,T+1)}
     r_star = {t: T for t in range(1,T+1)}
     q_tplas1_t = {t: T for t in range(1,T+1)}
-    print( "in hast T =", T)
+
+    T_set = {t for t in range(1, T+1)}
+    # h_{tj} = sum_{t=k}^{p-1} h_t for k < p  
+    h_tj = {}  
+    for t in T_set:  
+        for j in T_set:  
+            if t < j:  
+                h_tj[(t, j)] = sum(h[k] for k in range(t, j))
+    
+    # a(tj) for t<j (j is the orgin period in LFL solution)  
+    a = {}
+    a_ratio = {}
+    # a(tj) = s(j) - (h(tj) - p(j) + p(t)) * d(j)  for t<j, j=2..T  
+    for t in T_set:  
+        for j in T_set:  
+            if t < j:  
+                a[(t, j)] = s[j] - (h_tj[(t, j)] - p[j] + p[t]) * d[j]
+                a_ratio[(t,j)] = (s[j] + p[j]*d[j])/((h_tj[(t, j)] + p[t]) * d[j])
+
+    
     
     def d_cum(a,b):
         if b > T:
