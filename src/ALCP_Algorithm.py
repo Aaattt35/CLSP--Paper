@@ -57,9 +57,9 @@ def _ALCP_sgg_m(T, cap, d, c):
         max_r = min(T - 2, T - c + 3)  
         for r in range(t + 2,  max_r):
             if t not in cap:
-            print("ERROR: t not in cap ->", t)
-            print("Available keys:", cap.keys())
-            exit()
+                print("ERROR: t not in cap ->", t)
+                print("Available keys:", cap.keys())
+                exit()
             q_r_t = q_Operator(t, cap[t] - d[t], r, c, T)
             q_rplus1_r = q_Operator(r, cap[r] - d[r], r + 1, c, T)
             if (q_r_t == T or q_rplus1_r == T or r >= q_r_t):
