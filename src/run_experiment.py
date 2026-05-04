@@ -39,6 +39,7 @@ def clean_value(x):
     except:
         return float('nan')
 
+# ============================================Reading Input and Assigning Instance Values to Parameters===============================================
 def read_instance(path):
     data = {}
     with open(path, "r") as f:
@@ -57,7 +58,6 @@ if __name__ == "__main__":
     instance_file = sys.argv[1]
     instance_path = os.path.abspath(instance_file)
 
-# ============================================Reading Input and Assigning Instance Values to Parameters===============================================
     Parameters = Read_input(instance_path)
 
     # To get the planning horizon 'T':
@@ -91,7 +91,9 @@ if __name__ == "__main__":
             if t < j:  
                 a[(t, j)] = s[j] - (h_tj[(t, j)] - p[j] + p[t]) * d[j]
                 a_ratio[(t,j)] = (s[j] + p[j]*d[j])/((h_tj[(t, j)] + p[t]) * d[j])
- 
+    print(max(cap.keys()))
+    print(max(d.keys()))
+    print(T) 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 # =======================================================Defining Solve and Report Functions==========================================================
 def solve_and_report(DP_t, model, label, T_L, c, f, solver_type='highs'):
