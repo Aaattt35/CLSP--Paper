@@ -195,7 +195,7 @@ def solve_and_report(DP_t, model, label, T_L, c, f, solver_type='highs'):
 
 # ===============================================Main body of Running optimization experiments over all models=======================================
 
-T_h = [90]     #, 100, 120, 150, 200, 300, 500, 1000, 2000,  
+T_h = [30]     # just to make code runable with highs the actual value for T is 90, 100, 120, 150, 200, 300, 500, 1000, 2000,  
 C =[2]        #36, 26, 18, 12, 8, 5 , 3 , 2   
 F= [ (400, 1200) ]   #, (2400, 2800), (5600, 6400), (12800, 19200)
 noi = [1] #, 2, 3, 4 #number of Instance 
