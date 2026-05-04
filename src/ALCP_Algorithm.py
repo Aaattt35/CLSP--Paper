@@ -56,6 +56,7 @@ def _ALCP_sgg_m(T, cap, d, c):
     for t in reversed(range(1, T - c)):
         max_r = min(T - 2, T - c + 3)  
         for r in range(t + 2,  max_r):
+            print("t =", t, "r =", r, "T =", T)
             if t not in cap:
                 print("ERROR: t not in cap ->", t)
                 print("Available keys:", cap.keys())
