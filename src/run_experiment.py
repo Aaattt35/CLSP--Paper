@@ -268,8 +268,9 @@ for f in F:
                 
                 ins += 1
 # ======================================================== Save results to CSV ===============================================================
+output_path = "results/test_instance_output.csv"
 os.makedirs("results", exist_ok=True)
-pd.DataFrame(Result_run).to_csv("results/test_instance_output.csv", index=False)
+pd.DataFrame(Result_run).to_csv(output_path, index=False)
 print("✅ Results saved to results/test_instance_output.csv")
 print("✅ Results saved to:", os.path.abspath(output_path))
 
