@@ -13,31 +13,29 @@ The `src` directory contains all the source code used to build and execute the p
 
 ├── 📂- src/
 
-├── ├── ⚙️ ALCP_Algorithm.py
+├── ├── ⚙️ 1-ALCP_Algorithm.py  `: developed to Establishe an Upper Bound on the Parameter m used in the TPM‑m Model.`
 
-├── ├── ⚙️ build_AGG_model.py
+├── ├── ⚙️ 2-build_AGG_model.py  `:is recognized as the predominant modeling framework for CLSP.`
 
-├── ├── ⚙️ build_FAL_model.py
+├── ├── ⚙️ 3-build_FAL_model.py  `: is another well‑known formulation used in the literature to model the CLSP.`
 
-├── ├── ⚙️ build_SHP_model.py
+├── ├── ⚙️ 4-build_SHP_model.py  `: is also cited in the literature as a notable MIL formulation for the CLSP.`
 
-├── ├── ⚙️ build_TPM_m_model.py
+├── ├── ⚙️ 5-build_TPM_m_model.py  `: is a modified version of TPM that incorporates the output of ALCP in code segment 1.`
 
-├── ├── ⚙️ build_TPM_model.py
+├── ├── ⚙️ 6-build_TPM_model.py  `: is an original and efficient model developed in this study to exactly solve the CLSP.`
 
-├── ├── ⚙️ build_dp_solver.py
+├── ├── ⚙️ 7-build_dp_solver.py  `: represents a prominent framework for addressing the CLSP in its general form.`
 
-├── ├── ⚙️ build_envl_model.py
+├── ├── ⚙️ 8-build_envl_model.py  `: the first efficient model developed by Hartman et al., is used for comprehensive evaluation.`  
 
-├── ├── ⚙️ build_weakenvl_model.py
+├── ├── ⚙️ 9-build_weakenvl_model.py  `: the third efficient model developed by Hartman et al.`
 
-├── ├── ⚙️ build_weakl_model.py
-
-├── ├── ⚙️ build_weakenvl_model.py
+├── ├── ⚙️ 10-build_weakl_model.py  `: the second efficient model developed by Hartman et al.`
 
 ├── ├── 📄 **readme.md**
 
-├── ├── 💾 run_experiment.py
+├── ├── 💾 11-run_experiment.py  `: The main code calls and runs all models, recording their solving times for evaluation.`
 
 ├── 🧾 LICENSE
 
