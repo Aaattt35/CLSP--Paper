@@ -256,8 +256,21 @@ for f in F:
                 for label, builder in models_to_solve:
                     mdl = builder()  # build the Pyomo model
                     c_t, s_t, o_f, stat = solve_and_report(DP_r_t_s, mdl, label, T_L, c, f, solver_type='highs')
-                    new_rec = (ins, label, f, c, T, i_n, o_f, c_t, s_t, stat, T_stage)
-                    Result_run = np.append(Result_run, np.array(new_rec, dtype=Result_form))
+                    Result_run.append({
+                        "generation_num": ins,
+                        "method": label,
+                        "f_ratio": f,
+                        "c_ratio": c,
+                        "T": T,
+                        "instance_num": i_n,
+                        "Objective Function": o_f,
+                        "calculated_time": c_t,
+                        "system time": s_t,
+                        "status": stat,
+                        "Stage": T_stage,
+                    })
+                    #new_rec = (ins, label, f, c, T, i_n, o_f, c_t, s_t, stat, T_stage)
+                    #Result_run = np.append(Result_run, np.array(new_rec, dtype=Result_form))
                     StaT.append(stat)
                 
                 ###if solving with pure DP is required add the determined section here
