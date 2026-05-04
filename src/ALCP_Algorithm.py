@@ -3,14 +3,14 @@ from timeit import default_timer as timer
 ###ALCP algorithm  
 
 def _ALCP_sgg_m(T, cap, d, c):
-
+    
     start = timer()
     m_hat = {t: T - t + 1 for t in range(1, T+1)}
     m_hat_sen_2 = {t: T - t + 1 for t in range(1, T+1)}
     q_r_star = {t: T for t in range(1,T+1)}
     r_star = {t: T for t in range(1,T+1)}
     q_tplas1_t = {t: T for t in range(1,T+1)}
-
+    print( "in hast T =", T)
     
     def d_cum(a,b):
         if b > T:
@@ -56,7 +56,7 @@ def _ALCP_sgg_m(T, cap, d, c):
     for t in reversed(range(1, T - c)):
         max_r = min(T - 2, T - c + 3)  
         for r in range(t + 2,  max_r):
-            print("t =", t, "r =", r, "T =", T)
+            #print("t =", t, "r =", r, "T =", T)
             if t not in cap:
                 print("ERROR: t not in cap ->", t)
                 print("Available keys:", cap.keys())
