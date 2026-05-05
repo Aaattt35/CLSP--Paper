@@ -1,4 +1,4 @@
-📖 This repository provides the full implementation, benchmark instances, and computational results accompanying the manuscript **:**
+This repository provides the full implementation, benchmark instances, and computational results accompanying the manuscript **:**
 
 ## *Exact Optimal Solution for the Single-Item Capacitated Lot-Sizing Problem A New Mathematical Model*
 
