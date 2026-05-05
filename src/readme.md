@@ -35,7 +35,7 @@ The `src` directory contains all the source code used to build and execute the p
 
 ├── ├── 📄 **readme.md**
 
-├── ├── 💾 11-run_experiment.py  `: The main code calls and runs all models, recording their solving times for evaluation.`
+├── └── 💾 11-run_experiment.py  `: The main code calls and runs all models, recording their solving times for evaluation.`
 
 ├── 🧾 LICENSE
 
