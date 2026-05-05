@@ -52,7 +52,7 @@ The corresponding expected output is included in:
 
 This allows reviewers to execute the code with no installation or further setup required.
 
-** **Note:** ** When executed in GitHub Actions, the CSV output is created in the runner environment and is not persisted in the repository by default. In this workflow, the file is stored under the `run-model` directory and uploaded as a CSV artifact, allowing it to be retrieved and downloaded in `apload CSV artifact` after the workflow completes.
+* **Note:** When executed in GitHub Actions, the CSV output is created in the runner environment and is not persisted in the repository by default. In this workflow, the file is stored under the `run-model` directory and uploaded as a CSV artifact, allowing it to be retrieved and downloaded in `apload CSV artifact` after the workflow completes.
 
 ---
 
