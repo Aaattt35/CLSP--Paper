@@ -2,7 +2,7 @@ This repository provides the full implementation, benchmark instances, and compu
 
 ## *Exact Optimal Solution for the Single-Item Capacitated Lot-Sizing Problem A New Mathematical Model*
 
-The purpose of this repository is to ensure complete computational reproducibility for reviewers and readers, including access to the source code, datasets, and numerical results used in the preparation of the manuscript.
+The purpose of this repository is to ensure complete computational reproducibility for reviewers and readers, including access to the source code, datasets, and numerical results used in the manuscript.
 
 ---
 
