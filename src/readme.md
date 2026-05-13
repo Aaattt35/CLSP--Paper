@@ -1,6 +1,6 @@
 ## 📂 `src/` — Source Code Overview
 
-The `src` directory contains all the source code used to build and execute the performance evaluation between different CLSP models. All code has been developed by the author within this project.
+The `src` directory contains all the source code used to build and execute the performance evaluation between different CLSP models. All code has been developed by the author within this project in python.
 
 
 📂- CLSP--Paper/
