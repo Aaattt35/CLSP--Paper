@@ -15,19 +15,21 @@ The `src` directory contains all the source code used to build and execute the p
 
 ├── ├── ⚙️ 1-ALCP_Algorithm.py  `: developed to Establishe an Upper Bound on the Parameter m used in the TPM‑m Model.`
 
+├── ├── 📄 1-ALCP_Algorithm_Pseudocode.txt  `: a Clarification`
+
 ├── ├── ⚙️ 2-build_AGG_model.py  `:is recognized as the predominant modeling framework for CLSP.`
 
 ├── ├── ⚙️ 3-build_FAL_model.py  `: is another well‑known formulation used in the literature to model the CLSP.`
 
 ├── ├── ⚙️ 4-build_SHP_model.py  `: is also cited in the literature as a notable MIL formulation for the CLSP.`
 
-├── ├── ⚙️ 5-build_TPM_m_model.py  `: is a modified version of TPM that incorporates the output of ALCP in code segment 1.`
+├── ├── ⚙️ 5-build_TPM_m_model.py  `: is a modified version of TPM that incorporates the output of ALCP.`
 
-├── ├── ⚙️ 6-build_TPM_model.py  `: is an original and efficient model developed in this study to exactly solve the CLSP.`
+├── ├── ⚙️ 6-build_TPM_model.py  `: is the original proposed model.`
 
 ├── ├── ⚙️ 7-build_dp_solver.py  `: represents a prominent framework for addressing the CLSP in its general form.`
 
-├── ├── ⚙️ 8-build_envl_model.py  `: the first efficient model developed by Hartman et al., is used for comprehensive evaluation.`  
+├── ├── ⚙️ 8-build_envl_model.py  `: the first efficient model developed by Hartman et al.`  
 
 ├── ├── ⚙️ 9-build_weakenvl_model.py  `: the third efficient model developed by Hartman et al.`
 
@@ -35,7 +37,7 @@ The `src` directory contains all the source code used to build and execute the p
 
 ├── ├── 📄 **readme.md**
 
-├── └── 💾 11-run_experiment.py  `: The main code calls and runs all models, recording their solving times for evaluation.`
+├── └── 💾 11-run_experiment.py  `: The main code calls and runs all models.`
 
 ├── 🧾 LICENSE
 
