@@ -32,3 +32,52 @@ Output: Del (Profit Difference)
 24:    return q
 25: end procedure
 ========================================================================================
+
+
+
+========================================================================================
+Algorithm 2: Allocating Latest Consecutive Periods (ALCP)
+========================================================================================
+Input : Time horizon T, Unit costs a_{tj}, Demands d_t, Capacities Cap_t  (∀ 1 ≤ t < j ≤ T)
+Output: \hat{m}_t (Optimal number of periods / bound for each t)
+----------------------------------------------------------------------------------------
+
+1:  procedure ALCP(T, a_{tj}, d_t, Cap_t)
+2:      for t ← T - 1 down to 1 do
+3:          Find the smallest r such that: DELTA(t, r + 1) < 0
+4:          r*_t        ← r
+5:          q_{r*_t}    ← Q-OPERATOR(Cap_t - d_t, t, r*_t)
+6:          msen2_t     ← q_{r*_t} - t + 1
+7:          q           ← q_{r*_t}
+8:          
+9:          Find the smallest p such that: DELTA(q, p + 1) < 0
+10:         r*_q        ← p
+11:         mv_one_t    ← r*_q - t + 1
+12:         
+13:         Build index set S = { r*_t, r*_t + 1, ..., q_[r*_t](t) }
+14:         e           ← argmax_{s ∈ S} { r*_s }
+15:         r*_e        ← max_{s ∈ S} { r*_s }
+16:         rcC         ← Cap_t - d_t + d_e
+17:         rcD         ← rcC
+18:         S           ← S \ {e}
+19:         ms          ← Q-OPERATOR(rcC, t, r*_t)
+20:         
+21:         while (ms < r*_e) do
+22:             j ← argmin_{s ∈ S} { Cap_s }
+23:             if (j < e) then
+24:                 rcC ← rcC + Cap_j
+25:                 ms  ← Q-OPERATOR(rcC, t, r*_t)
+26:                 rcD ← rcD + d_j
+27:                 S   ← S \ {j}
+28:             end if
+29:         end while
+30:         
+31:         ms°         ← Q-OPERATOR(rcD, t, r*_t)
+32:         ap          ← ms° - q_{r*_t}
+33:         mv_one_t    ← msen2_t + ap + 1
+34:         \hat{m}_t   ← min(mv_one_t, mv_two_t)
+35:     end for
+36:     
+37:     return \hat{m}_t
+38: end procedure
+========================================================================================
