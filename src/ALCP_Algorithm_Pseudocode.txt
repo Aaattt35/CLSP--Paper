@@ -1,32 +1,28 @@
-```markdown
-$$
-\begin{array}{ll}
-\hline
-\textbf{Algorithm 1: } \text{Difference In Profit: } \Delta \\
-\textbf{Input: } cap_j, d_j \\
-\hline
-1: & \textbf{procedure } \textsc{Delta}(t, r) \\
-2: & \quad q_{[r]}(t) \leftarrow \textsc{Q-Operator}(Cap_t, t, r) \\
-3: & \quad q_{[r+1]}(r) \leftarrow \textsc{Q-Operator}(Cap_r, r, r+1) \\
-4: & \quad Del \leftarrow \sum_{i=r}^{q_{[r]}(t)} a_{ti} - \sum_{i=r+1}^{q_{[r+1]}(r)} a_{ri} \\
-5: & \quad \textbf{return } Del \\
-6: & \textbf{end procedure} \\[6pt]
-7: & \textbf{procedure } \textsc{Q-Operator}(C, t, r) \\
-8: & \quad \text{set } sp \text{ as initial step equal to } \left| \sum_{j=1}^T d_j \right| \\
-9: & \quad \textbf{if } \left( C - d_t - \sum_{i=r}^{r+sp} d_i < 0 \right) \textbf{ then} \\
-10: & \quad\quad \textbf{while } \left[ sp \ge 1 \ \& \ \left(cap[t] - \sum_{i=r}^{r+sp-1} d_i < 0\right) \right] \textbf{ do} \\
-11: & \quad\quad\quad sp \leftarrow sp - 1 \\
-12: & \quad\quad \textbf{end while} \\
-13: & \quad\quad q \leftarrow sp + r - 1 \\
-14: & \quad \textbf{end if} \\
-15: & \quad \textbf{if } \left( C - d_t - \sum_{i=r}^{r+sp} d_i \ge 0 \right) \textbf{ then} \\
-16: & \quad\quad \textbf{while } \left[ sp < T - sp \ \& \ \left(cap[t] - \sum_{i=r}^{r+sp+1} d_i \ge 0\right) \right] \textbf{ do} \\
-17: & \quad\quad\quad sp \leftarrow sp + 1 \\
-18: & \quad\quad \textbf{end while} \\
-19: & \quad\quad q \leftarrow sp + r \\
-20: & \quad \textbf{end if} \\
-21: & \quad \textbf{return } q \\
-22: & \textbf{end procedure} \\
-\hline
-\end{array}
-$$
+```text
+Algorithm 1: Difference In Profit (Delta)
+Input: cap (capacities), d (demands)
+
+1:  procedure Delta(t, r)
+2:      q_r(t)   ← Q-Operator(Cap_t, t, r)
+3:      q_{r+1}(r) ← Q-Operator(Cap_r, r, r + 1)
+4:      Del      ← sum_{i=r}^{q_r(t)} a_{t,i} - sum_{i=r+1}^{q_{r+1}(r)} a_{r,i}
+5:      return Del
+6:  end procedure
+
+7:  procedure Q-Operator(C, t, r)
+8:      set sp as initial step equal to |sum_{j=1}^T d_j|
+9:      if (C - d_t - sum_{i=r}^{r+sp} d_i) < 0 then
+10:         while sp ≥ 1 and (cap[t] - sum_{i=r}^{r+sp-1} d_i < 0) do
+11:             sp ← sp - 1
+12:         end while
+13:         q ← sp + r - 1
+14:     end if
+15:     if (C - d_t - sum_{i=r}^{r+sp} d_i) ≥ 0 then
+16:         while sp < T - sp and (cap[t] - sum_{i=r}^{r+sp+1} d_i ≥ 0) do
+17:             sp ← sp + 1
+18:         end while
+19:         q ← sp + r
+20:     end if
+21:     return q
+22: end procedure
+```
