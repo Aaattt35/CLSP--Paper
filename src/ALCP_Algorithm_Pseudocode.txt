@@ -81,3 +81,46 @@ Output: \hat{m}_t (Optimal number of periods / bound for each t)
 37:     return \hat{m}_t
 38: end procedure
 ========================================================================================
+
+
+---
+
+## Theoretical Background & Worst-Case Bound Formulation
+
+Assume period $t$ is a PRP (Production & Regeneration Period) and $q$ is also a PRP. The final scenario combines **Scenarios 2 and 3** to construct the **worst-case upper bound** on the coverage length $m^*_t$:
+
+1. **Demand Pre-satisfaction:** Demands for periods $t+1$ through $r^*_t$ are assumed to be satisfied by production periods occurring prior to period $t$.
+2. **Additional Production Periods (PPs):** Unlike earlier settings where coverage for period $t$ begins at $r^*_t$, here period $r^*_t$ itself remains a PP. To enforce the worst-case scenario, the maximum possible number of periods following $r^*_t$ are also assumed to become PPs.
+3. **Capacity Reallocation:** Releasing capacity from these new PPs allows the production at period $t$ to satisfy demands in more distant periods, delaying the end point of coverage and providing a tight upper bound $\hat{m}_t$.
+
+---
+
+### Mathematical Definitions
+
+- **Candidate Period Sequence:**
+  Let $T_{r^*:q} = \{r^*_t, r^*_t + 1, \dots, q_{[r^*]}(t)\}$ denote the sequence of periods starting from $r^*_t$ to be covered by period $t$, where:
+  $$q_{[r^*]}(t) = Q\left(RcD^0_t = RcC^0_t, \, t, \, r^*_t\right)$$
+
+- **Critical Period ($e$):**
+  Let $e$ be the period with the largest $r^*_j$ index within $T_{r^*:q}$:
+  $$e = \arg\max_{j \in T_{r^*:q}} \{r^*_j\}$$
+
+- **Sorted Capacity Subset ($T^{\downarrow}_{r^*:q}$):**
+  Obtained by removing element $e$ from $T_{r^*:q}$ and ordering the remaining periods in non-decreasing order of capacity:
+  $$T^{\downarrow}_{r^*:q} = \{t_{(n)} \mid cap_{t_{(n-1)}} \le cap_{t_{(n)}}\}, \quad \forall n = 2, 3, \dots, q_{[r^*]}(t) - r^*_t$$
+
+- **Milestones for Step $k$:**
+  For each step $k \in \{0, 1, \dots, q_{[r^*]}(t) - r^*_t\}$, define subset $T^k_{r^*:q} = \{t_{(1:k)}\}$. The corresponding coverage endpoints are:
+  $$ms^{[0]}_{[k]} = Q\left(RcD^{t_{(1:k)}}_t, \, t, \, r^*_t\right)$$
+  $$ms^{[k]}_{[k]} = Q\left(RcC^{t_{(1:k)}}_t, \, t, \, r^*_t\right)$$
+
+- **Optimal Subset Size ($g^*$):**
+  The minimal number of elements from $T^{\downarrow}_{r^*:q}$ required to delay coverage past $r^*_e$:
+  $$g^* = \min \left\{ k \;\middle|\; ms^{[k]}_{[k]} > r^*_e, \; k \in T^{\downarrow}_{r^*:q} \right\}$$
+
+- **Additional Periods & Upper Bound:**
+  The maximum additional consecutive periods period $t$ can cover in the worst-case is:
+  $$ap(t) = ms^{[0]}_{[g^*]} - q_{[r^*]}(t)$$
+  Yielding the closed-form upper bound:
+  $$\hat{m}_t = \left(q_{[r^*]}(t) - t + 1\right) + ap(t) + 1$$
+`
